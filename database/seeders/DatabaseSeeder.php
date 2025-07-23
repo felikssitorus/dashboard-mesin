@@ -18,6 +18,8 @@ class DatabaseSeeder extends Seeder
             RoleEmployee::class,
             PermissionEmployee::class,
             MaintenanceSeeder::class,
+            LineSeeder::class,
+            ProsesSeeder::class,
         ]);
     }
 }

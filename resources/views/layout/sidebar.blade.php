@@ -73,6 +73,47 @@
                     </div>
                     <!--end:Menu item-->
 
+                    <!--begin:Menu item-->
+                    <div class="menu-item pt-5">
+                        <!--begin:Menu content-->
+                        <div class="menu-content">
+                            <span class="text-gray-800 fw-bold text-uppercase fs-8">Data Master</span>
+                        </div>
+                        <!--end:Menu content-->
+                    </div>
+                    <!--end:Menu item-->
+                    {{-- Line --}}
+                    <!--begin:Menu item-->
+                    <div class="menu-item">
+                        <!--begin:Menu link-->
+                        <a class="menu-link {{ request()->is('v1/line') ? 'active' : '' }}" href="{{ route('v1.line.index') }}">
+                            <span class="menu-icon">
+                                {{-- <i class="ki-outline ki-element-11 fs-2"></i> --}}
+                                <i class="ki-duotone ki-category">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                </i>
+                            </span>
+                            <span class="menu-title fw-semibold">Line</span>
+                        </a>
+                        <a class="menu-link {{ request()->is('v1/proses') ? 'active' : '' }}" href="{{ route('v1.proses.index') }}">
+                            <span class="menu-icon">
+                                {{-- <i class="ki-outline ki-element-11 fs-2"></i> --}}
+                                <i class="ki-duotone ki-category">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                </i>
+                            </span>
+                            <span class="menu-title fw-semibold">Proses</span>
+                        </a>
+                        <!--end:Menu link-->
+                    </div>
+                    <!--end:Menu item-->
+
                     {{-- Sidebar Admin --}}
                     @include('layout.sidebar.admin')
 
@@ -99,7 +140,7 @@
                             </span>
                             <span class="menu-title fw-semibold">Contact US</span>
                         </a>
-                        <!--end:Menu link-->
+                        <!--end:Menu link-->==+
                     </div>
                     <!--end:Menu item-->
                     {{-- Audit Trail --}}

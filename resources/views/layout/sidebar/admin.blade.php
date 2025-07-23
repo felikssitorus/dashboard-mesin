@@ -62,13 +62,13 @@
         @endforeach
 
         @foreach (auth()->user()->roles->permission as $item)
-            @if (Str::is('admin.settings.index', $item->url))
+            @if (Str::is('admin.user.index', $item->url))
                 {{-- Web Settings --}}
                 <!--begin:Menu item-->
                 <div class="menu-item">
                     <!--begin:Menu link-->
-                    <a class="menu-link {{ request()->is('admin/settings*') ? 'active' : '' }}"
-                        href="{{ route('admin.settings.index') }}">
+                    <a class="menu-link {{ request()->is('admin/user*') ? 'active' : '' }}"
+                        href="{{ route('admin.user.index') }}">
                         <span class="menu-icon">
                             <i class="ki-duotone ki-user-tick fs-1">
                                 <span class="path1"></span>

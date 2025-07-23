@@ -39,4 +39,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermissi
         Route::get('', [App\Http\Controllers\System\Settings\SettingsController::class, 'index'])->name('index');
         Route::post('store', [App\Http\Controllers\System\Settings\SettingsController::class, 'store'])->name('store');
     });
+
+    // User
+    Route::prefix('user')->name('user.')->group(function () {
+        Route::get('', [App\Http\Controllers\Admin\UserController::class, 'index'])->name('index');
+        Route::get('getData', [App\Http\Controllers\Admin\UserController::class, 'getDataTableUser'])->name('getDataTableUser');
+        Route::get('create', [App\Http\Controllers\Admin\UserController::class, 'create'])->name('create');
+        Route::post('store', [App\Http\Controllers\Admin\UserController::class, 'store'])->name('store');
+        Route::get('edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('edit');
+        Route::put('update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('update');
+        Route::post('destroy', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('destroy');
+    });
 });

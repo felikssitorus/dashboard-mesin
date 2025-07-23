@@ -58,6 +58,12 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Roles::class, 'jobLvl', 'name');
     }
+
+    public function line()
+    {
+        return $this->belongsTo(Line::class, 'line_id', 'id');
+    }
+
     public function sessions()
     {
         return $this->belongsTo(Session::class, 'id', 'user_id');

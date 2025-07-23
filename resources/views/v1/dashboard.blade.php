@@ -31,20 +31,82 @@
             <!--end::Toolbar container-->
         </div>
         <!--end::Toolbar-->
+
         <!--begin::Content container-->
-        <div id="kt_app_content_container" class="app-container container-fluid">
-            <div class="card card-flush  shadow-sm border-0 mb-5">
+        <div id="kt_app_content_container" class="app-container container-fluid d-flex flex-column flex-column-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">Data Mesin</div>
+                    <div class="card-toolbar">
+                        <button class="btn btn-primary" onclick="addRuang()">
+                            <i class="ki-duotone ki-plus fs-2"></i>
+                            Add New
+                        </button>
+                    </div>
+                </div>
                 <div class="card-body">
                     <div class="card-content">
-                        <div class="row">
-                            <div class="col">
-                                <div class="row">
-                                    <div class="col-12">
-                                        <span class="text-gray-800 fs-2 mb-2 fw-bold">Dashboard</span>
+                        <div class="d-flex align-items-center position-relative my-5">
+                            <span class="svg-icon position-absolute ms-4">
+                                <i class="ki-duotone ki-magnifier fs-1">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                </i>
+                            </span>
+                            <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14"
+                                placeholder="Search Line" />
+                        </div>
+                        <table id="dt_line" class="table table-bordered align-middle table-row-dashed fs-6 gy-5">
+                            <thead>
+                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                                    <th style="width: 50px;">ID</th>
+                                    <th>Nama Line</th>
+                                    <th>Action</th>
+                            </thead>
+                            <tbody></tbody>
+                            <tfoot>
+                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
+                                    <th style="width: 50px;">ID</th>
+                                    <th>Nama Line</th>
+                                    <th>Action</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <!--begin::modal line-->
+                        <div class="modal fade" tabindex="-1" id="modalLine">
+                            <form id="formLine">
+                                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title" id="titleModalLine"></h3>
+
+                                            <!--begin::Close-->
+                                            <div class="btn btn-icon btn-sm ms-2" data-bs-dismiss="modal" aria-label="Close">
+                                                <i class="fas fa-times text-dark"></i>
+                                            </div>
+                                            <!--end::Close-->
+                                        </div>
+                                        
+                                        <div class="modal-body" id="bodyModalLine"></div>
+
+                                        <div class="modal-footer">
+                                            <div class="me-auto">
+                                                <small class="fst-italic"><span class="text-danger">* Tidak boleh kosong</span></small>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-light btn-action" type="button" data-bs-dismiss="modal" id="btnBatal" onclick="" style="margin-right: 10px;">
+                                                Batal
+                                            </button>
+                                            <button type="submit" class="btn btn-sm btn-primary btn-action" id="btnSimpan" onclick="">
+                                                Simpan
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
+                        <!--end::modal line -->
+
                     </div>
                 </div>
             </div>

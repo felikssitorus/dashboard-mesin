@@ -131,7 +131,6 @@
         });
     </script>
     <script>
-
         function deleteRuang(id) {
             Swal.fire({
                 text: "Are you sure you want to delete this Role?",
