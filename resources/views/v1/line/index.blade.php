@@ -134,6 +134,7 @@
             }, 1000); // Adjust the timeout duration as needed
 
             let DT = $("#dt_line").DataTable({
+                order: [[1, 'asc']], // Default order by the second column (name)
                 processing: false,
                 serverSide: true,
                 ajax: {

@@ -100,6 +100,7 @@
             }, 1000); // Adjust the timeout duration as needed
 
             let DT = $("#dt_permission").DataTable({
+                order: [[1, 'asc']],
                 processing: true,
                 serverSide: true,
                 ajax: {

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Proses extends Model
+class Mesin extends Model
 {
     use HasFactory, UUIDAsPrimaryKey;
     use SoftDeletes;
@@ -36,11 +36,11 @@ class Proses extends Model
                 $model->inupby = Auth::user()->email;
             }
         });
-    }
+    } 
 
-    public function mesin()
+    public function proses()
     {
-        return $this->belongsToMany(Mesin::class, 'mesin_proses', 'proses_id', 'mesin_id')
+        return $this->belongsToMany(Proses::class, 'mesin_proses', 'mesin_id', 'proses_id')
             ->withTimestamps();
     }
 }

@@ -33,6 +33,17 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
         Route::put('update/{id}', [App\Http\Controllers\V1\ProsesController::class, 'update'])->name('update');
         Route::post('destroy', [App\Http\Controllers\V1\ProsesController::class, 'destroy'])->name('destroy');
     });
+
+    // data master mesin
+    Route::prefix('mesin')->name('mesin.')->group(function () {
+        Route::get('', [App\Http\Controllers\V1\MesinController::class, 'index'])->name('index');
+        Route::get('getData', [App\Http\Controllers\V1\MesinController::class, 'getDataTableMesin'])->name('getDataTableMesin');
+        Route::get('create', [App\Http\Controllers\V1\MesinController::class, 'create'])->name('create');
+        Route::post('store', [App\Http\Controllers\V1\MesinController::class, 'store'])->name('store');
+        Route::get('edit/{id}', [App\Http\Controllers\V1\MesinController::class, 'edit'])->name('edit');
+        Route::put('update/{id}', [App\Http\Controllers\V1\MesinController::class, 'update'])->name('update');
+        Route::post('destroy', [App\Http\Controllers\V1\MesinController::class, 'destroy'])->name('destroy');
+    });
     
 });
 
@@ -64,5 +75,15 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
 //         Route::get('edit/{id}', [App\Http\Controllers\V1\ProsesController::class, 'edit'])->name('edit');
 //         Route::put('update/{id}', [App\Http\Controllers\V1\ProsesController::class, 'update'])->name('update');
 //         Route::post('destroy', [App\Http\Controllers\V1\ProsesController::class, 'destroy'])->name('destroy');
+//     });
+
+//     // data master mesin
+//     Route::prefix('mesin')->name('mesin.')->group(function () {
+//         Route::get('getData', [App\Http\Controllers\V1\MesinController::class, 'getDataTableMesin'])->name('getDataTableMesin');
+//         Route::get('create', [App\Http\Controllers\V1\MesinController::class, 'create'])->name('create');
+//         Route::post('store', [App\Http\Controllers\V1\MesinController::class, 'store'])->name('store');
+//         Route::get('edit/{id}', [App\Http\Controllers\V1\MesinController::class, 'edit'])->name('edit');
+//         Route::put('update/{id}', [App\Http\Controllers\V1\MesinController::class, 'update'])->name('update');
+//         Route::post('destroy', [App\Http\Controllers\V1\MesinController::class, 'destroy'])->name('destroy');
 //     });
 // });

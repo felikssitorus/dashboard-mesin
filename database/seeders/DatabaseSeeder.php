@@ -19,7 +19,9 @@ class DatabaseSeeder extends Seeder
             PermissionEmployee::class,
             MaintenanceSeeder::class,
             LineSeeder::class,
+            MesinSeeder::class,
             ProsesSeeder::class,
+            MesinProsesSeeder::class,
         ]);
     }
 }

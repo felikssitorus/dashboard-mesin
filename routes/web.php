@@ -9,8 +9,8 @@ Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLog
 Route::post('/auth', [App\Http\Controllers\Auth\HrisController::class, 'store'])->name('loginHris'); 
 
 // Route::get('/login', [App\Http\Controllers\Auth\LoginController::class, 'showLoginForm'])->middleware('NetworkTesting')->name('login');
-
 // Route::post('/auth', [App\Http\Controllers\Auth\HrisController::class, 'store'])->middleware('NetworkTesting')->name('loginHris');
+
 Route::get('/logout', [App\Http\Controllers\Auth\HrisController::class, 'logout'])->name('logout');
 
 Route::post('/clear-notifications', [App\Http\Controllers\System\NotificationController::class, 'clear']);
