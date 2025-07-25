@@ -80,7 +80,7 @@ class MesinController extends Controller
             
             return response()->json([
                 'success' => true,
-                'message' => 'Mesin Has Been Created',
+                'message' => 'Machine Has Been Created',
                 'redirect' => route('v1.dashboard')
             ]);
 
@@ -94,18 +94,18 @@ class MesinController extends Controller
 
     public function edit($id)
     {
-        $mesin = Mesin::findOrFail($id);
-        $proses = Proses::all();
+        $mesin = Mesin::with('proses')->findOrFail($id);
+        $allProses = Proses::all();
         return response()->json([
             'mesin' => $mesin,
-            'proses' => $proses,
+            'proses' => $allProses,
         ]);
     }
 
     public function update(Request $request, $id)
     {
        $validatedData = $request->validate([
-            'kodeMesin'         => 'required|string|unique:mesins,kodeMesin',
+            'kodeMesin'         => 'required|string',
             'name'              => 'required|string|max:255',
             'kapasitas'         => 'nullable|string',
             'speed'             => 'nullable|string',
@@ -116,7 +116,7 @@ class MesinController extends Controller
         try {
             $mesin = Mesin::findOrFail($id);
             
-            $mesin = Mesin::update([
+            $mesin->update([
                 'kodeMesin'      => $validatedData['kodeMesin'],
                 'name'           => $validatedData['name'],
                 'kapasitas'      => $validatedData['kapasitas'] ?? null,
@@ -128,8 +128,8 @@ class MesinController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'User Has Been Updated',
-                'redirect' => route('admin.user.index')
+                'message' => 'Machine Has Been Updated',
+                'redirect' => route('v1.dashboard')
             ]);
         } catch (\Throwable $th) {
             return response()->json([
@@ -143,18 +143,18 @@ class MesinController extends Controller
     {
         $id = $request->input('id');
         try {
-            $user = User::findOrFail($id);
-            $user->delete();
+            $mesin = Mesin::findOrFail($id);
+            $mesin->delete();
 
             return response()->json([
                 'success' => true,
-                'message' => 'User Has Been Deleted',
+                'message' => 'Machine Has Been Deleted',
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
-                'redirect' => route('admin.user.index') 
+                'redirect' => route('v1.dashboard') 
             ]);
         }
     }

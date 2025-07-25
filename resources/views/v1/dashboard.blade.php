@@ -290,12 +290,9 @@
                     </div>
                 </div>
                 <div class="row align-items-center mb-3">
-                    <label for="proses_ids" class="col-sm-4 col-form-label">Job Level<span class="text-danger">*</span></label>
+                    <label for="proses_ids" class="col-sm-4 col-form-label">Proses<span class="text-danger">*</span></label>
                     <div class="col-sm-8">
-                        <select class="form-control form-select" id="proses_ids" name="proses_ids[]" required>
-                            <option value="">-- Select Job Level --</option>
-                            <option value="PKWTT">PKWTT</option>
-                            <option value="Tetap">Tetap</option>
+                        <select class="form-control form-select" id="proses_ids" name="proses_ids[]" multiple="multiple" required>
                         </select>
                     </div>
                 </div>
@@ -305,27 +302,35 @@
             let url = `{{ url('v1/mesin/edit') }}/${id}`;
             $.get(url, function (response) {
                 let mesin = response.mesin;
-                let roles = response.roles;
-                let lines = response.lines;
+                let allProses = response.proses;
 
-                // --- Mengisi field input biasa ---
+                // --- mengisi field input biasa ---
                 $('#kodeMesin').val(mesin.kodeMesin);
                 $('#name').val(mesin.name);
                 $('#kapasitas').val(mesin.kapasitas);
                 $('#speed').val(mesin.speed);
                 $('#jumlahOperator').val(mesin.jumlahOperator);
-                $('#proses_ids').val(mesin.proses_ids);
-
-                // --- Mengisi dan memilih dropdown Roles ---
-                let prosesSelect = $('#proses_ids');
-                prosesSelect.empty().append('<option value="">-- Select Proses --</option>');
-                roles.forEach(function(proses) {
-                    let selected = (mesin.proses_ids == proses.name) ? 'selected' : '';
-                    prosesSelect.append(`<option value="${proses.name}" ${selected}>${proses.name}</option>`);
+                
+                // --- untuk mengambil semua proses pada mesin tersebut ---
+                let selectedProsesIds = mesin.proses.map(function(p) {
+                    return p.id;
                 });
 
+                // --- membuat dropdown proses ---
+                let prosesSelect = $('#proses_ids');
+                prosesSelect.empty(); // Kosongkan dulu
+                allProses.forEach(function(proses) {
+                    // cek apakah id proses ini ada di dalam array 'selectedProsesIds'
+                    let isSelected = selectedProsesIds.includes(proses.id);
+                    prosesSelect.append(`<option value="${proses.id}" ${isSelected ? 'selected' : ''}>${proses.name}</option>`);
+                });
 
-                // Tampilkan modal setelah semuanya siap
+                //agar tampilan dropdown lebih baik
+                $('#proses_ids').select2({
+                    dropdownParent: $('#modalMesin')
+                });
+
+                // tampilkan modal setelah semuanya siap
                 $('#modalMesin').modal('show');
                 
             });
@@ -333,7 +338,7 @@
 
         function deleteRuang(id) {
             Swal.fire({
-                text: "Are you sure you want to delete this User?",
+                text: "Are you sure you want to delete this Machine?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it!",
@@ -341,14 +346,14 @@
             }).then(function (result) {
                 if (result.value) {
                     $.ajax({
-                        url: "{{ route('admin.user.destroy') }}",
+                        url: "{{ route('v1.mesin.destroy') }}",
                         type: "POST",
                         data: {
                             id: id,
                             _token: "{{ csrf_token() }}",
                         },
                         success: function (response) {
-                            $("#dt_user").DataTable().ajax.reload(null, false);
+                            $("#dt_mesin").DataTable().ajax.reload(null, false);
                             Swal.fire("Deleted!", response.message, "success");
                         },
                         error: function (xhr) {
