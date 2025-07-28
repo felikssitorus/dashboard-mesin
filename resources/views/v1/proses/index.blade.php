@@ -56,7 +56,7 @@
                             <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14"
                                 placeholder="Search Proses" />
                         </div>
-                        <table id="dt_proses" class="table table-bordered align-middle table-row-dashed fs-6 gy-5">
+                        <table id="dt_proses" class="table table-bordered table-striped align-middle table-row-dashed fs-6 gy-5 border rounded">
                             <thead>
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                     <th style="width: 50px;">ID</th>

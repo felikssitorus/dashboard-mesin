@@ -8,7 +8,8 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Facades\DataTables;
-use Yajra\DataTables\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
+use App\Services\System\LogActivityService;
 
 class ProsesController extends Controller
 {
@@ -43,6 +44,17 @@ class ProsesController extends Controller
 
         try {
             Proses::create($proses);
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Tambah Proses',
+                    'catatan' => 'Berhasil menambah data proses',
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Proses Has Been Created',
@@ -50,6 +62,17 @@ class ProsesController extends Controller
             ]);
 
         } catch (\Throwable $th) {
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Tambah Proses',
+                    'catatan' => $th->getMessage(),
+                ]);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -73,12 +96,33 @@ class ProsesController extends Controller
             $proses = Proses::findOrFail($id);
             $proses->update($prosesData);
 
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Edit Proses',
+                    'catatan' => 'Berhasil mengubah data proses',
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Proses Has Been Updated',
                 'redirect' => route('v1.proses.index')
             ]);
         } catch (\Throwable $th) {
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Edit Proses',
+                    'catatan' => $th->getMessage(),
+                ]);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -93,11 +137,32 @@ class ProsesController extends Controller
             $proses = Proses::findOrFail($id);
             $proses->delete();
 
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Hapus Proses',
+                    'catatan' => 'Berhasil menghapus data proses',
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Proses Has Been Deleted',
             ]);
         } catch (\Throwable $th) {
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Hapus Proses',
+                    'catatan' => $th->getMessage(),
+                ]);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),

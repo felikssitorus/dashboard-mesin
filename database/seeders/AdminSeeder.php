@@ -22,9 +22,9 @@ class AdminSeeder extends Seeder
             // 'slug_name' => 'administrator',
         ]);
 
-        // Menentukan role SUPERVISOR
-        $supervisorRole = Roles::firstOrCreate([
-            'name' => 'SUPERVISOR',
+        // Menentukan role Operator
+        $operatorRole = Roles::firstOrCreate([
+            'name' => 'Operator',
         ]);
 
         // Menambahkan user Administrator
@@ -46,9 +46,22 @@ class AdminSeeder extends Seeder
             'empTypeGroup' => 'PKWTT',
             'fullname' => 'SuperVisor',
             'email' => 'supervisor@kalbe.co.id',
-            'jobLvl' => 'SUPERVISOR',
-            'jobTitle' => 'SUPERVISOR',
+            'jobLvl' => 'Administrator',
+            'jobTitle' => 'Administrator',
             'groupName' => 'Cikarang',
+            'groupKode' => 'KF.9999',
+            'password' => Hash::make('123')
+        ]);
+
+        // Menambahkan user haloworld
+        User::create([
+            'employeId' => '000000002',
+            'empTypeGroup' => 'PKWTT',
+            'fullname' => 'Halo World',
+            'email' => 'haloworld@gmail.com',
+            'jobLvl' => 'Operator',
+            'jobTitle' => 'Operator',
+            'groupName' => 'Jakarta',
             'groupKode' => 'KF.9999',
             'password' => Hash::make('123')
         ]);
@@ -63,29 +76,29 @@ class AdminSeeder extends Seeder
             ]);
         }
 
-        // Menambahkan permissions untuk role SUPERVISOR
-        $permissions = [
-            'login',
-            'logout',
-            'v1.dashboard.index',
-            'v1.proses.index',
-            'v1.proses.store',
-            'v1.proses.edit',
-            'v1.proses.update',
-            'v1.proses.destroy',
-            'v1.line.index',
-            'v1.line.store',
-            'v1.line.edit',
-            'v1.line.update',
-            'v1.line.destroy',
-        ];
-
         foreach ($routes as $routeName => $route) {
             // Simpan routeName dan URL ke tabel permissions
             Permissions::create([
                 'url' => $routeName, // Menggunakan nama rute sebagai identifikasi
-                'role_id' => $supervisorRole->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
+                'role_id' => $operatorRole->id // Set default jobLvl, ini dapat diubah sesuai kebutuhan Anda
             ]);
         }
+
+        // Menambahkan permissions untuk role SUPERVISOR
+        // $permissions = [
+        //     'login',
+        //     'logout',
+        //     'v1.dashboard.index',
+        //     'v1.proses.index',
+        //     'v1.proses.store',
+        //     'v1.proses.edit',
+        //     'v1.proses.update',
+        //     'v1.proses.destroy',
+        //     'v1.line.index',
+        //     'v1.line.store',
+        //     'v1.line.edit',
+        //     'v1.line.update',
+        //     'v1.line.destroy',
+        // ];
     }
 }

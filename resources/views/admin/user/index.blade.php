@@ -72,7 +72,7 @@
                             <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14"
                                 placeholder="Search User" />
                         </div>
-                        <table id="dt_user" class="table table-bordered align-middle table-row-dashed fs-6 gy-5">
+                        <table id="dt_user" class="table table-bordered table-striped align-middle table-row-dashed fs-6 gy-5 border rounded">
                             <thead>
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                     <th style="width: 50px;">ID</th>
@@ -210,78 +210,105 @@
             $('#formUser').attr('action', "{{ route('admin.user.store') }}");
             $('#formUser').attr('method', 'POST');
 
-            $('#bodyModalUser').html(`
-                <div class="row align-items-center mb-3">
-                    <label for="fullname" class="col-sm-4 col-form-label">Nama User<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="fullname" name="fullname" required placeholder="Masukkan nama lengkap">
+            let url = "{{ route('admin.user.create') }}";
+            $.get(url, function(response) {
+                let rolesOptions='<option value="">-- Select Jov Level --</option>';
+                response.all_roles.forEach(function(role) {
+                    rolesOptions += `<option value="${role.name}">${role.name}</option>`;
+                });
+                
+                let linesOptions='<option value="">-- Select Line --</option>';
+                response.all_lines.forEach(function(line) {
+                    linesOptions += `<option value="${line.id}">${line.name}</option>`;
+                });
+
+                $('#bodyModalUser').html(`
+                    <div class="row align-items-center mb-3">
+                        <label for="fullname" class="col-sm-4 col-form-label">Nama User<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="fullname" name="fullname" required placeholder="Masukkan nama lengkap">
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="employeId" class="col-sm-4 col-form-label">Employe ID<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="employeId" name="employeId" required placeholder="Masukkan ID karyawan">
+                    <div class="row align-items-center mb-3">
+                        <label for="compCode" class="col-sm-4 col-form-label">Company Code<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="compCode" name="compCode" required placeholder="Masukkan company code">
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="empTypeGroup" class="col-sm-4 col-form-label">Employe Group<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <select class="form-control form-select" id="empTypeGroup" name="empTypeGroup" required>
-                            <option value="">-- Select Employe Group --</option>
+                    <div class="row align-items-center mb-3">
+                        <label for="employeId" class="col-sm-4 col-form-label">Employe ID<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="employeId" name="employeId" required placeholder="Masukkan ID karyawan">
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="empTypeGroup" class="col-sm-4 col-form-label">Employe Group<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <select class="form-control form-select" id="empTypeGroup" name="empTypeGroup" required>
+                            <option value="">-- Select Employe Group --</option>    
                             <option value="PKWTT">PKWTT</option>
-                            <option value="Tetap">Tetap</option>
-                        </select>
+                                <option value="Tetap">Tetap</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="email" class="col-sm-4 col-form-label">Email<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="email" name="email" required placeholder="Masukkan email">
+                    <div class="row align-items-center mb-3">
+                        <label for="email" class="col-sm-4 col-form-label">Email<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="email" name="email" required placeholder="Masukkan email">
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="email_backup" class="col-sm-4 col-form-label">Email Backup</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="email_backup" name="email_backup" placeholder="Masukkan email backup">
+                    <div class="row align-items-center mb-3">
+                        <label for="email_backup" class="col-sm-4 col-form-label">Email Backup</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="email_backup" name="email_backup" placeholder="Masukkan email backup">
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="phone" class="col-sm-4 col-form-label">Phone</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="phone" name="phone" placeholder="Masukkan nomor telepon">
+                    <div class="row align-items-center mb-3">
+                        <label for="phone" class="col-sm-4 col-form-label">Phone</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Masukkan nomor telepon">
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="jobLvl" class="col-sm-4 col-form-label">Job Level<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <select class="form-control form-select" id="jobLvl" name="jobLvl" required>
-                            <option value="">-- Select Job Level --</option>
-                            <option value="PKWTT">PKWTT</option>
-                            <option value="Tetap">Tetap</option>
-                        </select>
+                    <div class="row align-items-center mb-3">
+                        <label for="jobLvl" class="col-sm-4 col-form-label">Job Level<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <select class="form-control form-select" id="jobLvl" name="jobLvl" required>
+                                ${rolesOptions}
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="line_id" class="col-sm-4 col-form-label">Line</label>
-                    <div class="col-sm-8">
-                        <select class="form-control form-select" id="line_id" name="line_id">
-                            <option value="">-- Select Line --</option>
-                            <option value="PKWTT">PKWTT</option>
-                            <option value="Tetap">Tetap</option>
-                        </select>
+                    <div class="row align-items-center mb-3">
+                        <label for="line_id" class="col-sm-4 col-form-label">Line</label>
+                        <div class="col-sm-8">
+                            <select class="form-control form-select" id="line_id" name="line_id" >
+                                ${linesOptions}
+                            </select>
+                        </div>
                     </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="groupName" class="col-sm-4 col-form-label">Group Name<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <select class="form-control form-select" id="groupName" name="groupName" required>
-                            <option value="">-- Select Group --</option>
-                            <option value="PKWTT">PKWTT</option>
-                            <option value="Tetap">Tetap</option>
-                        </select>
+                    <div class="row align-items-center mb-3">
+                        <label for="groupKode" class="col-sm-4 col-form-label">Group Kode<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="groupKode" name="groupKode" required placeholder="Masukkan kode group">
+                        </div>
                     </div>
-                </div>
-            `);
+                    <div class="row align-items-center mb-3">
+                        <label for="groupName" class="col-sm-4 col-form-label">Group Name<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <select class="form-control form-select" id="groupName" name="groupName" required>
+                                <option value="">-- Select Group Name --</option>
+                                <option value="Cikarang">Cikarang</option>
+                                <option value="Jakarta">Jakarta</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="password" class="col-sm-4 col-form-label">Password<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="password" class="form-control" id="password" name="password" required placeholder="Masukkan password">
+                        </div>
+                    </div>
+                `);
+            });
 
             $('#modalUser').modal('show');
         }

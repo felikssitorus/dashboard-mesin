@@ -8,7 +8,8 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Facades\DataTables;
-use Yajra\DataTables\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
+use App\Services\System\LogActivityService;
 
 class LineController extends Controller
 {
@@ -43,6 +44,17 @@ class LineController extends Controller
 
         try {
             Line::create($line);
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Tambah Line',
+                    'catatan' => 'Berhasil menambah ' . $line['name'],
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Line Has Been Created',
@@ -50,6 +62,17 @@ class LineController extends Controller
             ]);
 
         } catch (\Throwable $th) {
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Tambah Line',
+                    'catatan' => $th->getMessage(),
+                ]);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -73,12 +96,33 @@ class LineController extends Controller
             $line = Line::findOrFail($id);
             $line->update($lineData);
 
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Edit Line',
+                    'catatan' => 'Berhasil mengubah ' . $lineData['name'],
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Line Has Been Updated',
                 'redirect' => route('v1.line.index')
             ]);
         } catch (\Throwable $th) {
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Edit Line',
+                    'catatan' => $th->getMessage(),
+                ]);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -93,11 +137,32 @@ class LineController extends Controller
             $line = Line::findOrFail($id);
             $line->delete();
 
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Hapus Line',
+                    'catatan' => 'Berhasil menghapus ' . $line->name,
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Line Has Been Deleted',
             ]);
         } catch (\Throwable $th) {
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Hapus Line',
+                    'catatan' => $th->getMessage(),
+                ]);
+            }
+            
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),

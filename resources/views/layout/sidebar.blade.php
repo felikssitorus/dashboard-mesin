@@ -140,7 +140,7 @@
                             </span>
                             <span class="menu-title fw-semibold">Contact US</span>
                         </a>
-                        <!--end:Menu link-->==+
+                        <!--end:Menu link-->
                     </div>
                     <!--end:Menu item-->
                     {{-- Audit Trail --}}

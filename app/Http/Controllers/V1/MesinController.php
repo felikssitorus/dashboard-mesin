@@ -9,7 +9,8 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\Facades\DataTables;
-use Yajra\DataTables\Facades\Auth;
+use Illuminate\Support\Facades\Auth;
+use App\Services\System\LogActivityService;
 
 class MesinController extends Controller
 {
@@ -77,6 +78,16 @@ class MesinController extends Controller
             ]);
 
             $mesin->proses()->attach($request->proses_ids);
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Tambah Mesin',
+                    'catatan' => 'Berhasil menambah data mesin',
+                ]);
+            }
             
             return response()->json([
                 'success' => true,
@@ -85,6 +96,17 @@ class MesinController extends Controller
             ]);
 
         } catch (\Throwable $th) {
+            
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Tambah Mesin',
+                    'catatan' => $th->getMessage(),
+                ]);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -126,12 +148,33 @@ class MesinController extends Controller
 
             $mesin->proses()->sync($request->proses_ids);
 
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Edit Mesin',
+                    'catatan' => 'Berhasil mengubah data mesin',
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Machine Has Been Updated',
                 'redirect' => route('v1.dashboard')
             ]);
         } catch (\Throwable $th) {
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Edit Mesin',
+                    'catatan' => $th->getMessage(),
+                ]);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -146,11 +189,32 @@ class MesinController extends Controller
             $mesin = Mesin::findOrFail($id);
             $mesin->delete();
 
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Hapus Mesin',
+                    'catatan' => 'Berhasil menghapus data mesin',
+                ]);
+            }
+
             return response()->json([
                 'success' => true,
                 'message' => 'Machine Has Been Deleted',
             ]);
         } catch (\Throwable $th) {
+
+            if (Auth::check()) {
+                $user = Auth::user()->email;
+                (new LogActivityService())->handle([
+                    'perusahaan' => '-',
+                    'user' => strtoupper($user),
+                    'tindakan' => 'Hapus Mesin',
+                    'catatan' => $th->getMessage(),
+                ]);
+            }
+
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
