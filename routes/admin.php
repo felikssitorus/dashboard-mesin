@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 
 // Admin Zone
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermission'])->group(function () {
-    // permission
+    // permission role
     Route::prefix('permission')->name('permission.')->group(function () {
         Route::get('', [App\Http\Controllers\System\Permission\PermissionController::class, 'index'])->name('index');
         Route::get('getData', [App\Http\Controllers\System\Permission\PermissionController::class, 'getDataTablePermission'])->name('getDataTable');
@@ -14,6 +14,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermissi
         Route::post('update/{id}', [App\Http\Controllers\System\Permission\PermissionController::class, 'update'])->name('update');
         Route::post('destroy', [App\Http\Controllers\System\Permission\PermissionController::class, 'destroy'])->name('destroy');
     });
+
+    // permission line
+    Route::prefix('permissionLine')->name('permissionLine.')->group(function () {
+        Route::get('', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'index'])->name('index');
+        Route::get('getData', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'getDataTablePermission'])->name('getDataTable');
+        Route::get('create', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'create'])->name('create');
+        Route::post('store', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'store'])->name('store');
+        Route::get('edit/{id}', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'edit'])->name('edit');
+        Route::post('update/{id}', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'update'])->name('update');
+        Route::post('destroy', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'destroy'])->name('destroy');
+    });
+
     // department
     Route::prefix('department')->name('dept.')->group(function () {
         Route::get('', [App\Http\Controllers\System\Department\DepartmentController::class, 'index'])->name('index');

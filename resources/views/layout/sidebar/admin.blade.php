@@ -37,6 +37,32 @@
         @endforeach
 
         @foreach (auth()->user()->roles->permission as $item)
+            @if (Str::is('admin.permission.index', $item->url))
+                {{-- Permission --}}
+                <!--begin:Menu item-->
+                <div class="menu-item">
+                    <!--begin:Menu link-->
+                    <a class="menu-link {{ request()->is('admin/permissionLine*') ? 'active' : '' }}"
+                        href="{{ route('admin.permissionLine.index') }}">
+                        <span class="menu-icon">
+                            <i class="ki-duotone ki-lock-2 fs-1">
+                                <span class="path1"></span>
+                                <span class="path2"></span>
+                                <span class="path3"></span>
+                                <span class="path4"></span>
+                                <span class="path5"></span>
+                            </i>
+                        </span>
+                        <span class="menu-title fw-semibold">Permission Line Access</span>
+                    </a>
+                    <!--end:Menu link-->
+                </div>
+                <!--end:Menu item-->
+                @break
+            @endif
+        @endforeach
+
+        @foreach (auth()->user()->roles->permission as $item)
             @if (Str::is('admin.dept.index', $item->url))
                 {{-- Department --}}
                 <!--begin:Menu item-->

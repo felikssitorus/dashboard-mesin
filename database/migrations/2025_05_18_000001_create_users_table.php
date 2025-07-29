@@ -19,8 +19,6 @@ return new class extends Migration
             $table->string('phone')->nullable();
             $table->string('jobLvl');
             $table->string('jobTitle');
-            $table->uuid('line_id')->nullable();
-            $table->foreign('line_id')->references('id')->on('lines')->onDelete('set null');
             $table->string('groupKode');
             $table->string('groupName');
             $table->string('password');

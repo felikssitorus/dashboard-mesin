@@ -63,15 +63,27 @@ class LineController extends Controller
 
         } catch (\Throwable $th) {
 
+            // if (Auth::check()) {
+            //     $user = Auth::user()->email;
+            //     (new LogActivityService())->handle([
+            //         'perusahaan' => '-',
+            //         'user' => strtoupper($user),
+            //         'tindakan' => 'Tambah Line',
+            //         'catatan' => $th->getMessage(),
+            //     ]);
+            // }
+
             if (Auth::check()) {
                 $user = Auth::user()->email;
+                $user = json_decode(auth()->user()->result, true);
                 (new LogActivityService())->handle([
-                    'perusahaan' => '-',
+                    'perusahaan' => strtoupper($data['CompName']),
                     'user' => strtoupper($user),
-                    'tindakan' => 'Tambah Line',
-                    'catatan' => $th->getMessage(),
+                    'tindakan' => 'Login',
+                    'catatan' => 'Berhasil Login Account',
                 ]);
             }
+            
 
             return response()->json([
                 'success' => false,

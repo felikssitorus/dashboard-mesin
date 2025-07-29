@@ -36,10 +36,20 @@ class Line extends Model
                 $model->inupby = Auth::user()->email;
             }
         });
-    } 
+    }
+
+    public function permission()
+    {
+        return $this->hasMany(PermissionsLine::class, 'line_id');
+    }
+
+    public function permissions()
+    {
+        return $this->belongsTo(PermissionsLine::class, 'id', 'line_id');
+    }
 
     public function users()
     {
-        return $this->hasMany(User::class, 'line_id', 'id');
+        return $this->hasMany(UserProfile::class, 'line_id', 'id');
     }
 }
