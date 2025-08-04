@@ -72,8 +72,11 @@ class MesinController extends Controller
                     $speed = $mesin->speed ?? '-';
                     return '<span class="text-muted fw-bold">' . $speed . '</span>';
                 })
+                ->editColumn('updated_at', function($mesin) {
+                    return $mesin->tanggalUpdate;
+                })
                 ->rawColumns([
-                    'action', 'proses_name', 'kapasitas', 'speed', 'line_name'
+                    'action', 'proses_name', 'kapasitas', 'speed', 'line_name', 'updated_at'
                 ])
                 ->make(true);
         }
@@ -201,9 +204,11 @@ class MesinController extends Controller
 
     public function edit($id)
     {
+        $userLine = auth()->user()->profile?->line;
         $mesin = Mesin::with('proses', 'line')->findOrFail($id);
         $allProses = Proses::all();
         return response()->json([
+            'userLine' => $userLine,
             'mesin' => $mesin,
             'proses' => $allProses,
         ]);

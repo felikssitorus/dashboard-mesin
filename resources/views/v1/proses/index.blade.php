@@ -61,6 +61,8 @@
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                     <th style="width: 50px;">NO</th>
                                     <th>Nama Proses</th>
+                                    <th>Updated_at</th>
+                                    <th>Inupby</th>
                                     <th>Action</th>
                             </thead>
                             <tbody></tbody>
@@ -136,6 +138,8 @@
                 columns: [
                     { data: "DT_RowIndex" },
                     { data: "name" },
+                    { data: "updated_at", name: "updated_at", orderable: true, searchable: true },
+                    { data: "inupby", name: "inupby", orderable: true, searchable: true },
                     {
                         data: "action",
                         orderable: false,

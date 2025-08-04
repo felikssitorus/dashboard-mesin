@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Line extends Model
 {
@@ -56,5 +57,12 @@ class Line extends Model
     public function mesins()
     {
         return $this->hasMany(Mesin::class, 'line_id', 'id');
+    }
+
+    public function tanggalUpdate(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value, $attributes) => \Carbon\Carbon::parse($attributes['updated_at'])->translatedFormat('d F Y'),
+        );
     }
 }

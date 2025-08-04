@@ -76,6 +76,8 @@
                                     <th>Jumlah Operator</th>
                                     <th>Kapasitas</th>
                                     <th>Speed</th>
+                                    <th>Updated_at</th>
+                                    <th>Inupby</th>
                                     <th>Action</th>
                             </thead>
                             <tbody></tbody>
@@ -163,7 +165,9 @@
                     { data: "name", name: "name", orderable: true, searchable: true },
                     { data: "jumlahOperator", name: "jumlahOperator", width: "10%" },
                     { data: "kapasitas", name: "kapasitas", orderable: true, searchable: true, width: "20%" },
-                    { data: "speed" },
+                    { data: "speed", name: "speed", orderable: true, searchable: true, width: "10%" },
+                    { data: "updated_at", name: "updated_at", orderable: true, searchable: true, width: "5%" },
+                    { data: "inupby", name: "inupby", orderable: true, searchable: true, width: "5%" },
                     { data: "action", orderable: false, searchable: false, width: "15------%" },
                 ],
                 columnDefs: [
@@ -287,7 +291,8 @@
                 <div class="row align-items-center mb-3">
                     <label for="line_id" class="col-sm-4 col-form-label">Line<span class="text-danger">*</span></label>
                     <div class="col-sm-8">
-                        <input type="text" class="form-control" id="line_id" name="line_id" required readonly style="cursor: not-allowed">
+                        <input type="text" class="form-control" id="line_name" name="line_name" readonly style="cursor: not-allowed">
+                        <input type="hidden" id="line_id" name="line_id">
                     </div>
                 </div>
                 <div class="row align-items-center mb-3">
@@ -336,7 +341,8 @@
                 let allProses = response.proses;
 
                 // --- mengisi field input biasa ---
-                $('#line_id').val(mesin.line.name);
+                $('#line_name').val(mesin.line.name);
+                $('#line_id').val(mesin.line.id);
                 $('#kodeMesin').val(mesin.kodeMesin);
                 $('#name').val(mesin.name);
                 $('#kapasitas').val(mesin.kapasitas);

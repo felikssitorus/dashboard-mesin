@@ -16,7 +16,7 @@
                 <!--begin:Menu item-->
                 <div class="menu-item">
                     <!--begin:Menu link-->
-                    <a class="menu-link {{ request()->is('admin/permission*') ? 'active' : '' }}"
+                    <a class="menu-link {{ request()->is('admin/permission') ? 'active' : '' }}"
                         href="{{ route('admin.permission.index') }}">
                         <span class="menu-icon">
                             <i class="ki-duotone ki-lock-2 fs-1">
@@ -37,12 +37,12 @@
         @endforeach
 
         @foreach (auth()->user()->roles->permission as $item)
-            @if (Str::is('admin.permission.index', $item->url))
+            @if (Str::is('admin.permissionLine.index', $item->url))
                 {{-- Permission --}}
                 <!--begin:Menu item-->
                 <div class="menu-item">
                     <!--begin:Menu link-->
-                    <a class="menu-link {{ request()->is('admin/permissionLine*') ? 'active' : '' }}"
+                    <a class="menu-link {{ request()->is('admin/permissionLine') ? 'active' : '' }}"
                         href="{{ route('admin.permissionLine.index') }}">
                         <span class="menu-icon">
                             <i class="ki-duotone ki-lock-2 fs-1">

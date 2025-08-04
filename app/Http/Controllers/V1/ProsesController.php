@@ -29,8 +29,11 @@ class ProsesController extends Controller
                     return '<button class="btn btn-sm btn-icon btn-light-warning me-2" onclick="editRuang(\'' . $row->id . '\')"><i class="ki-duotone ki-notepad-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i></button>
                         <button class="btn btn-sm btn-icon btn-light-danger" onclick="deleteRuang(\'' . $row->id . '\')"><i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i></button>';
                 })
+                ->editColumn('updated_at', function($proses) {
+                    return $proses->tanggalUpdate;
+                })
                 ->rawColumns([
-                    'action'
+                    'action', 'updated_at'
                 ])
                 ->make(true);
         }
