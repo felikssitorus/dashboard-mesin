@@ -14,7 +14,6 @@ use Illuminate\Database\Eloquent\Model;
 class UserProfile extends Model
 {
     use HasFactory, UUIDAsPrimaryKey;
-    use SoftDeletes;
     
     /**
      * The attributes that are mass assignable.

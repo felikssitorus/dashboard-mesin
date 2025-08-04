@@ -13,15 +13,31 @@
                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
                     <!--begin::Title-->
                     <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
-                        Line
+                        Line Manage
                     </h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
                         <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">
-                            <a href="#" class="text-muted text-hover-primary">Data Master</a>
+                            <a href="#" class="text-muted text-hover-primary">Home</a>
                         </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">Admin</li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item">
+                            <span class="bullet bg-gray-400 w-5px h-2px"></span>
+                        </li>
+                        <!--end::Item-->
+                        <!--begin::Item-->
+                        <li class="breadcrumb-item text-muted">Line Manage</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -36,9 +52,9 @@
         <div id="kt_app_content_container" class="app-container container-fluid d-flex flex-column flex-column-fluid">
             <div class="card">
                 <div class="card-header">
-                    <div class="card-title"></div>
+                    <div class="card-title">{{ $line->name }}</div>
                     <div class="card-toolbar">
-                        <button class="btn btn-primary" onclick="addRuang()">
+                        <button class="btn btn-primary" onclick="addRuang('{{ $line->id }}')">
                             <i class="ki-duotone ki-plus fs-2"></i>
                             Add New
                         </button>
@@ -54,25 +70,28 @@
                                 </i>
                             </span>
                             <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14"
-                                placeholder="Search Line" />
+                                placeholder="Search User" />
                         </div>
-                        <table id="dt_line" class="table table-bordered table-striped align-middle table-row-dashed fs-6 gy-5 border rounded">
+                        <table id="dt_user" class="table table-bordered table-striped align-middle table-row-dashed fs-6 gy-5 border rounded">
                             <thead>
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
                                     <th style="width: 50px;">NO</th>
-                                    <th>Nama Line</th>
+                                    <th>Line</th>
+                                    <th>Nama User</th>
+                                    <th>Email</th>
+                                    <th>Job Level</th>
                                     <th>Action</th>
                             </thead>
                             <tbody></tbody>
                         </table>
 
-                        <!--begin::modal line-->
-                        <div class="modal fade" tabindex="-1" id="modalLine">
-                            <form id="formLine">
-                                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                        <!--begin::modal user-->
+                        <div class="modal fade" tabindex="-1" id="modalUser">
+                            <form id="formUser">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h3 class="modal-title" id="titleModalLine"></h3>
+                                            <h3 class="modal-title" id="titleModalUser"></h3>
 
                                             <!--begin::Close-->
                                             <div class="btn btn-icon btn-sm ms-2" data-bs-dismiss="modal" aria-label="Close">
@@ -81,11 +100,11 @@
                                             <!--end::Close-->
                                         </div>
                                         
-                                        <div class="modal-body" id="bodyModalLine"></div>
+                                        <div class="modal-body" id="bodyModalUser"></div>
 
                                         <div class="modal-footer">
                                             <div class="me-auto">
-                                                <small class="fst-italic"><span class="text-danger">* Tidak boleh kosong</span></small>
+                                                <small class="fst-italic"><span class="text-danger">*Tidak boleh kosong</span></small>
                                             </div>
                                             <button type="button" class="btn btn-sm btn-light btn-action" type="button" data-bs-dismiss="modal" id="btnBatal" onclick="" style="margin-right: 10px;">
                                                 Batal
@@ -98,7 +117,7 @@
                                 </div>
                             </form>
                         </div>
-                        <!--end::modal line -->
+                        <!--end::modal user -->
 
                     </div>
                 </div>
@@ -118,7 +137,8 @@
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
 
-        const _URL = "{{ route('v1.line.getDataTableLine') }}";
+        const _URL = "{{ route('admin.permissionLine.getDataTableUser') }}";
+
 
         $(document).ready(function () {
             $('.page-loading').fadeIn();
@@ -126,16 +146,22 @@
                 $('.page-loading').fadeOut();
             }, 1000); // Adjust the timeout duration as needed
 
-            let DT = $("#dt_line").DataTable({
-                order: [[1, 'asc']], // Default order by the second column (name)
+            let DT = $("#dt_user").DataTable({
+                order: [[3, 'asc']],
                 processing: false,
                 serverSide: true,
                 ajax: {
                     url: _URL,
+                    data: function (d) {
+                        d.line_id = "{{ $line->id }}";
+                    }
                 },
                 columns: [
                     { data: "DT_RowIndex" },
-                    { data: "name" },
+                    { data: "line_name" },
+                    { data: "fullname" },
+                    { data: "email" },
+                    { data: "jobLvl" },
                     {
                         data: "action",
                         orderable: false,
@@ -160,56 +186,43 @@
         // let isEdit_temp = 0;
         // let id_temp = "";
 
-        function addRuang() {
-            // isEdit_temp = 0;
-            $('#formLine')[0].reset();  // clear the form
-            $('#titleModalLine').html('Add New Line');
-            $('#formLine').find('input[name="_method"]').remove();
+        function addRuang(id) {
+            $('#formUser')[0].reset();
+            $('#titleModalUser').html('Add New User');
+            $('#formUser').find('input[name="_method"]').remove();
+            $('#formUser').attr('action', `{{ url('admin/permissionLine/storeUser') }}/${id}`);
+            $('#formUser').attr('method', 'POST');
 
-            $('#formLine').attr('action', "{{ route('v1.line.store') }}");
-            $('#formLine').attr('method', 'POST');
-
-            $('#bodyModalLine').html(`
+            $('#bodyModalUser').html(`
                 <div class="form-group mb-3">
-                    <label for="name" class="form-label">Nama Line <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                    <label for="user_id" class="form-label">Name<span class="text-danger">*</span></label>
+                    <select class="form-select" id="user_id_select" name="user_id" required></select>
                 </div>
             `);
-
-            $('#modalLine').modal('show');
-        }
-
-        function editRuang(id) {
-            // isEdit_temp = 1;
-            id_temp = id;
-            $('#formLine')[0].reset();  // clear the form
-            $('#titleModalLine').html('Edit Line');
-            $('#formLine').find('input[name="_method"]').remove();
-
-            $('#formLine').attr('action', `{{ url('v1/line/update') }}/${id}`);
-            $('#formLine').attr('method', 'POST');
-
-            $('#formLine').append('<input type="hidden" name="_method" value="PUT">');
-
-            $('#bodyModalLine').html(`
-                <input type="hidden" name="id" id="id">
-                <div class="form-group mb-3">
-                    <label for="name" class="form-label">Nama Line <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="name" name="name" required>
-                </div>
-            `);
-
-            // Ambil data dari server untuk diisikan ke form
-            let url = `{{ url('v1/line/edit') }}/${id}`;
-            $.get(url, function (response) {
-                $('#name').val(response.name);
-                $('#modalLine').modal('show');
+            
+            $('#user_id_select').select2({
+                placeholder: "Search and Select User...",
+                minimumInputLength: 2, 
+                dropdownParent: $('#modalUser'),
+                ajax: {
+                    url: "{{ route('admin.permissionLine.getAvailableUsers') }}",
+                    dataType: 'json',
+                    delay: 250, 
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },
+                    cache: true
+                }
             });
+
+            $('#modalUser').modal('show');
         }
 
         function deleteRuang(id) {
             Swal.fire({
-                text: "Are you sure you want to delete this Line?",
+                text: "Are you sure you want to delete this User?",
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Yes, delete it!",
@@ -217,14 +230,14 @@
             }).then(function (result) {
                 if (result.value) {
                     $.ajax({
-                        url: "{{ route('v1.line.destroy') }}",
+                        url: "{{ route('admin.permissionLine.destroyUser') }}",
                         type: "POST",
                         data: {
                             id: id,
                             _token: "{{ csrf_token() }}",
                         },
                         success: function (response) {
-                            $("#dt_line").DataTable().ajax.reload(null, false);
+                            $("#dt_user").DataTable().ajax.reload(null, false);
                             Swal.fire("Deleted!", response.message, "success");
                         },
                         error: function (xhr) {

@@ -43,4 +43,9 @@ class Mesin extends Model
         return $this->belongsToMany(Proses::class, 'mesin_proses', 'mesin_id', 'proses_id')
             ->withTimestamps();
     }
+
+    public function line()
+    {
+        return $this->belongsTo(Line::class, 'line_id', 'id');
+    }
 }

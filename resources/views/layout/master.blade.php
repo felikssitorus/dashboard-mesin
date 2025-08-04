@@ -32,6 +32,7 @@
     data-kt-app-sidebar-enabled="true" data-kt-app-sidebar-fixed="true" data-kt-app-sidebar-hoverable="true"
     data-kt-app-sidebar-push-header="true" data-kt-app-sidebar-push-toolbar="true"
     data-kt-app-sidebar-push-footer="true" data-kt-app-toolbar-enabled="true" class="app-default"
+    data-kt-app-sidebar-minimize="on"
     style="background-image: url('/assets/img/bglineB.svg'); background-repeat: repeat-y; background-size: cover;">
 
     <!--begin::Theme mode setup on page load-->

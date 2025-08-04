@@ -14,7 +14,7 @@
         <!--end::Logo image-->
         <!--begin::Sidebar toggle-->
 
-        <div id="kt_app_sidebar_toggle"
+        <!-- <div id="kt_app_sidebar_toggle"
             class="app-sidebar-toggle btn btn-icon btn-shadow btn-sm btn-color-muted btn-active-color-primary h-30px w-30px position-absolute top-50 start-100 translate-middle rotate
             {{-- {{ request()->is('v1/formulir') ? 'active' : '' }} --}}"
             data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body"
@@ -23,7 +23,7 @@
                 <span class="path1"></span>
                 <span class="path2"></span>
             </i>
-        </div>
+        </div> -->
         <!--end::Sidebar toggle-->
     </div>
     <!--end::Logo-->
@@ -86,6 +86,18 @@
                     <!--begin:Menu item-->
                     <div class="menu-item">
                         <!--begin:Menu link-->
+                        <a class="menu-link {{ request()->is('v1/mesin') ? 'active' : '' }}" href="{{ route('v1.mesin.index') }}">
+                            <span class="menu-icon">
+                                {{-- <i class="ki-outline ki-element-11 fs-2"></i> --}}
+                                <i class="ki-duotone ki-category">
+                                    <span class="path1"></span>
+                                    <span class="path2"></span>
+                                    <span class="path3"></span>
+                                    <span class="path4"></span>
+                                </i>
+                            </span>
+                            <span class="menu-title fw-semibold">Data Mesin</span>
+                        </a>
                         <a class="menu-link {{ request()->is('v1/line') ? 'active' : '' }}" href="{{ route('v1.line.index') }}">
                             <span class="menu-icon">
                                 {{-- <i class="ki-outline ki-element-11 fs-2"></i> --}}

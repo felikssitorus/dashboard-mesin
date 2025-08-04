@@ -64,20 +64,12 @@
                         <table id="dt_permission" class="table table-bordered align-middle table-row-dashed fs-6 gy-5">
                             <thead>
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th style="width: 50px;">ID</th>
+                                    <th style="width: 50px;">NO</th>
                                     <th>Job Level</th>
                                     <th>Allowed Urls</th>
                                     <th>Action</th>
                             </thead>
                             <tbody></tbody>
-                            <tfoot>
-                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th style="width: 50px;">ID</th>
-                                    <th>Job Level</th>
-                                    <th>Allowed Urls</th>
-                                    <th>Action</th>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

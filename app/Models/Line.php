@@ -52,4 +52,9 @@ class Line extends Model
     {
         return $this->hasMany(UserProfile::class, 'line_id', 'id');
     }
+
+    public function mesins()
+    {
+        return $this->hasMany(Mesin::class, 'line_id', 'id');
+    }
 }

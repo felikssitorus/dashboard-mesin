@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignUuid('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignUuid('line_id')->nullable()->constrained('lines')->onDelete('set null');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 

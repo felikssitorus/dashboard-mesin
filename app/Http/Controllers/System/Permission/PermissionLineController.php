@@ -5,6 +5,7 @@ namespace App\Http\Controllers\System\Permission;
 use App\Http\Controllers\Controller;
 use App\Models\PermissionsLine;
 use App\Models\Line;
+use App\Models\User;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -15,7 +16,7 @@ class PermissionLineController extends Controller
     public function getDataTablePermission(Request $request)
     {
         if ($request->ajax()) {
-            $query = Line::query()->latest()->get();
+            $query = Line::withCount('users')->latest();
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -25,12 +26,26 @@ class PermissionLineController extends Controller
                     return $urls;
                 })
                 ->addColumn('action', function ($row) {
-                    return '<a href="' . route('admin.permissionLine.edit', $row->id) . '" class="btn btn-sm btn-icon btn-light-warning me-2"><i class="ki-duotone ki-notepad-edit fs-2"><span class="path1"></span><span class="path2"></span></i></a>
-                        <button class="btn btn-sm btn-icon btn-light-danger" onclick="deleteRuang(\'' . $row->id . '\')"><i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i></button>';
+                    $editUrl = route('admin.permissionLine.edit', $row->id);
+                    $addUserUrl = route('admin.permissionLine.createUser', $row->id);
+
+                    $editBtn = '<a href="' . $editUrl . '" class="btn btn-sm btn-icon btn-light-warning me-2" title="Manage Access"><i class="ki-duotone ki-notepad-edit fs-2"><span class="path1"></span><span class="path2"></span></i></a>';
+                    
+                    $deleteBtn = '<button class="btn btn-sm btn-icon btn-light-danger" onclick="deleteRuang(\'' . $row->id . '\')" title="Delete"><i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i></button>';
+
+                    $addUserBtn = '<a href="' . $addUserUrl . '" class="btn btn-sm btn-light-primary d-flex align-items-center" title="Add User to Line">' .
+                                '<i class="ki-duotone ki-user-add fs-2 me-1"></i> Add User' .
+                                '</a>';
+
+                    return '<div class="d-flex flex-row gap-2">' . $editBtn . $deleteBtn . $addUserBtn . '</div>';
+                })
+                ->editColumn('users_count', function ($row) {
+                    return '<span class="badge badge-light-primary fs-7">' . $row->users_count . ' User</span>';
                 })
                 ->rawColumns([
                     'urls',
-                    'action'
+                    'action',
+                    'users_count'
                 ])
                 ->make(true);
         }
@@ -130,6 +145,128 @@ class PermissionLineController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Line deleted successfully.'
+        ]);
+    }
+
+    public function createUser($id)
+    {
+        $line = Line::findOrFail($id);
+        return view('admin.line.user', compact('line'));  
+    }
+
+    public function getAvailableUsers(Request $request)
+    {
+
+        $search = $request->input('term');
+        $availableUsers = User::where(function ($query) {
+                $query->whereDoesntHave('profile')
+                    ->orWhereHas('profile', function ($q) {
+                        $q->whereNull('line_id');
+                    });
+            })
+            ->where('fullname', 'ILIKE', "%{$search}%") 
+            ->limit(10)
+            ->get(['id', 'fullname as text']); 
+
+        return response()->json($availableUsers);
+    }
+
+    public function getDataTableUser(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $lineId = $request->input('line_id');
+            if ($lineId) {
+                $query = User::with(['profile.line'])
+                    ->whereHas('profile', function($q) use ($lineId) {
+                        $q->where('line_id', $lineId);
+                    });
+            } else {
+                $query = User::with(['profile.line']);
+            }   
+
+            $query->latest();
+
+            return DataTables::of($query)
+                ->addIndexColumn()
+                ->addColumn('line_name', function ($user) {
+                    return $user->profile?->line?->name ?? '-';
+                })
+                ->addColumn('action', function ($row) {
+                    $deleteBtn = '<button class="btn btn-sm btn-light-danger" onclick="deleteRuang(\'' . $row->id . '\')" title="Delete">Delete</button>';
+                    return $deleteBtn;
+                })
+                ->rawColumns([
+                    'action', 'line_name'
+                ])
+                ->make(true);
+        }
+    }
+    
+    public function editUser($id)
+    {
+        $user = User::findOrFail($id);
+        $lines = Line::all();
+        return view('admin.line.editUser', compact('user', 'lines'));
+    }   
+
+    public function storeUser(Request $request, $id)
+    {
+        $line = Line::findOrFail($id);
+        // $userId = $request->input('user_id');
+
+        // if (!$userId) {
+        //     return response()->json([
+        //         'success' => false,
+        //         'message' => 'User ID is required.'
+        //     ]);
+        // }
+
+        $validatedData = $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        try{
+            $user = User::findOrFail($validatedData['user_id']);
+            $user->profile()->updateOrCreate(
+                ['user_id' => $user->id],
+                ['line_id' => $line->id]
+            );
+
+            return response()->json([
+                'success' => true,
+                'message' => 'User added to permission line successfully.',
+                'redirect' => route('admin.permissionLine.index')
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => $th->getMessage(),
+            ], 500);
+        }   
+    }
+
+    public function destroyUser(Request $request)
+    {
+        $userId = $request->input('id');
+
+        if (!$userId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'User ID is required.'
+            ]);
+        }
+
+        $user = User::find($userId);
+
+        if ($user && $user->profile) {
+            // Hapus profile yang terkait dengan user
+            $user->profile->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User removed from permission line successfully.'
         ]);
     }
 

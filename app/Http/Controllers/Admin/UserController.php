@@ -24,12 +24,12 @@ class UserController extends Controller
     public function getDataTableUser(Request $request)
     {
         if ($request->ajax()) {
-            $query = User::with(['line'])->get();
+            $query = User::with(['profile.line'])->get();
 
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('line_name', function ($user) {
-                    return $user->line?->name ?? '-';
+                    return $user->profile?->line?->name ?? '-';
                 })
                 ->addColumn('action', function ($row) {
                     return '<button class="btn btn-sm btn-icon btn-light-warning me-2" onclick="editRuang(\'' . $row->id . '\')"><i class="ki-duotone ki-notepad-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i></button>
@@ -214,6 +214,17 @@ class UserController extends Controller
                 'redirect' => route('admin.user.index') 
             ]);
         }
+    }
+
+    public function search(Request $request)
+    {
+        $term = $request->input('q');
+        $users = User::where('fullname', 'LIKE', "%{$term}%")
+                    ->whereNull('line_id') // opsional filter
+                    ->limit(20)
+                    ->get(['id', 'fullname']);
+
+        return response()->json($users);
     }
 
 }

@@ -59,18 +59,11 @@
                         <table id="dt_proses" class="table table-bordered table-striped align-middle table-row-dashed fs-6 gy-5 border rounded">
                             <thead>
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th style="width: 50px;">ID</th>
+                                    <th style="width: 50px;">NO</th>
                                     <th>Nama Proses</th>
                                     <th>Action</th>
                             </thead>
                             <tbody></tbody>
-                            <tfoot>
-                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th style="width: 50px;">ID</th>
-                                    <th>Nama Proses</th>
-                                    <th>Action</th>
-                                </tr>
-                            </tfoot>
                         </table>
 
                         <!--begin::modal proses-->

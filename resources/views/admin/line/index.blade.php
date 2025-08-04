@@ -64,20 +64,13 @@
                         <table id="dt_permission_line" class="table table-bordered align-middle table-row-dashed fs-6 gy-5">
                             <thead>
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th style="width: 50px;">ID</th>
+                                    <th style="width: 50px;">NO</th>
                                     <th>Line</th>
                                     <th>Allowed Urls</th>
+                                    <th>Users</th>
                                     <th>Action</th>
                             </thead>
                             <tbody></tbody>
-                            <tfoot>
-                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th style="width: 50px;">ID</th>
-                                    <th>Line</th>
-                                    <th>Allowed Urls</th>
-                                    <th>Action</th>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -110,10 +103,12 @@
                     { data: "DT_RowIndex" },
                     { data: "name" },
                     { data: "urls" },
+                    { data: "users_count"},
                     {
                         data: "action",
                         orderable: false,
                         searchable: false,
+                        width: "200px",
                     },
                 ],
                 columnDefs: [

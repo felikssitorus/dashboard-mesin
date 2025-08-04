@@ -37,50 +37,51 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Data Mesin</div>
-                    <div class="card-toolbar">
-                        <button class="btn btn-primary" onclick="addRuang()">
-                            <i class="ki-duotone ki-plus fs-2"></i>
-                            Add New
-                        </button>
-                    </div>
                 </div>
                 <div class="card-body">
                     <div class="card-content">
-                        <div class="d-flex align-items-center position-relative my-5">
-                            <span class="svg-icon position-absolute ms-4">
-                                <i class="ki-duotone ki-magnifier fs-1">
-                                    <span class="path1"></span>
-                                    <span class="path2"></span>
-                                </i>
-                            </span>
-                            <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14"
-                                placeholder="Search Mesin" />
+                        <div class="d-flex flex-wrap gap-2 justify-content-start align-items-center py-5">
+
+                            <div class="d-flex align-items-center">
+                                <label for="filterLines" class="form-label me-2 mb-0">Line:</label>
+                                <select id="filterLines" class="form-select form-select-sm w-150px">
+                                    <option value="">Semua Line</option>
+                                    @foreach ($filter_lines as $line)
+                                        <option value="{{ $line->id }}">{{ $line->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="d-flex align-items-center">
+                                <label for="filterProses" class="form-label mx-2 mb-0">Proses:</label>
+                                <select id="filterProses" class="form-select form-select-sm w-150px">
+                                    <option value="">Semua Proses</option>
+                                    @foreach ($filter_proses as $proses)
+                                        <option value="{{ $proses->id }}">{{ $proses->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+
+                            <div class="d-flex align-items-center position-relative ms-auto">
+                                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"><span class="path1"></span><span class="path2"></span></i>
+                                <input type="text" id="search_dt" class="form-control form-control-sm w-250px ps-12" placeholder="Search Mesin" />
+                            </div>
+
                         </div>
+                        
                         <table id="dt_mesin" class="table table-bordered table-striped align-middle table-row-dashed fs-6 gy-5 border rounded">
                             <thead>
                                 <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th style="width: 50px;">ID</th>
+                                    <th style="width: 50px;">NO</th>
+                                    <th>Line</th>
+                                    <th>Proses</th>
                                     <th>Kode Mesin</th>
                                     <th>Nama Mesin</th>
+                                    <th>Jumlah Operator</th>
                                     <th>Kapasitas</th>
                                     <th>Speed</th>
-                                    <th>Jumlah Operator</th>
-                                    <th>Proses</th>
-                                    <th>Action</th>
                             </thead>
                             <tbody></tbody>
-                            <tfoot>
-                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th style="width: 50px;">ID</th>
-                                    <th>Kode Mesin</th>
-                                    <th>Nama Mesin</th>
-                                    <th>Kapasitas</th>
-                                    <th>Speed</th>
-                                    <th>Jumlah Operator</th>
-                                    <th>Proses</th>
-                                    <th>Action</th>
-                                </tr>
-                            </tfoot>
                         </table>
 
                         <!--begin::modal mesin-->
@@ -126,6 +127,7 @@
     <!--end::Content-->
 @endsection
 
+
 @section('scripts')
     <script src="{{asset("/assets/plugins/custom/datatables/datatables.bundle.js")}}"></script>
     <script>
@@ -134,7 +136,7 @@
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
         });
 
-        const _URL = "{{ route('v1.mesin.getDataTableMesin') }}";
+        const _URL = "{{ route('v1.dashboard.getDataTableMesin') }}";
 
         $(document).ready(function () {
             $('.page-loading').fadeIn();
@@ -143,25 +145,25 @@
             }, 1000); // Adjust the timeout duration as needed
 
             let DT = $("#dt_mesin").DataTable({
-                order: [[2, 'asc']],
+                order: [[1, 'asc']],
                 processing: false,
                 serverSide: true,
                 ajax: {
                     url: _URL,
+                    data: function (d) {
+                        d.filter_lines = $('#filterLines').val();
+                        d.filter_proses = $('#filterProses').val();
+                    },
                 },
                 columns: [
-                    { data: "DT_RowIndex", orderable: false, searchable: false },
-                    { data: "kodeMesin" },
-                    { data: "name" },
-                    { data: "kapasitas" },
+                    { data: "DT_RowIndex", orderable: false, searchable: false, width: "5%" },
+                    { data: "line_name", name: "line.name", orderable: false, searchable: true, width: "5%" },
+                    { data: "proses_name", name: "proses.name", orderable: false, searchable: true, width: "5%" },
+                    { data: "kodeMesin", name: "kodeMesin", orderable: true, searchable: true, width: "10%" },
+                    { data: "name", name: "name", orderable: true, searchable: true },
+                    { data: "jumlahOperator", name: "jumlahOperator", width: "10%" },
+                    { data: "kapasitas", name: "kapasitas", orderable: true, searchable: true, width: "20%" },
                     { data: "speed" },
-                    { data: "jumlahOperator"},
-                    { data: "proses_name", name: "proses.name", orderable: false, searchable: true },
-                    {
-                        data: "action",
-                        orderable: false,
-                        searchable: false,
-                    },
                 ],
                 columnDefs: [
                     {
@@ -173,197 +175,13 @@
                 ],
             });
 
+            $('#filterLines, #filterProses').on('change', function() {
+                DT.ajax.reload(); // Muat ulang data tabel
+            });
+
             $('#search_dt').on('keyup', function () {
                 DT.search(this.value).draw();
             });
         });
-
-        // let isEdit_temp = 0;
-        // let id_temp = "";
-
-        function addRuang() {
-            // isEdit_temp = 0;
-            $('#formMesin')[0].reset();  // clear the form
-            $('#titleModalMesin').html('Add New Mesin');
-            $('#formMesin').find('input[name="_method"]').remove();
-
-            $('#formMesin').attr('action', "{{ route('v1.mesin.store') }}");
-            $('#formMesin').attr('method', 'POST');
-
-            $.get("{{ route('v1.mesin.create') }}", function(response) {
-                let prosesOptions='';
-                response.all_proses.forEach(function(proses) {
-                    prosesOptions += `<option value="${proses.id}">${proses.name}</option>`;
-                });
-
-                $('#bodyModalMesin').html(`
-                    <div class="row align-items-center mb-3">
-                        <label for="kodeMesin" class="col-sm-4 col-form-label">Kode Mesin<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="kodeMesin" name="kodeMesin" required placeholder="Masukkan kode mesin">
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="name" class="col-sm-4 col-form-label">Nama Mesin<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="name" name="name" required placeholder="Masukkan nama mesin">
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="speed" class="col-sm-4 col-form-label">Speed</label>
-                        <div class="col-sm-8">
-                            <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="jumlahOperator" class="col-sm-4 col-form-label">Jumlah Operator<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <input type="number" class="form-control" id="jumlahOperator" name="jumlahOperator" min="1" value="1" required>
-                        </div>
-                    </div>
-                    <div class="row align-items-center mb-3">
-                        <label for="proses_ids" class="col-sm-4 col-form-label">Proses<span class="text-danger">*</span></label>
-                        <div class="col-sm-8">
-                            <select class="form-control form-select" id="proses_ids" name="proses_ids[]" multiple="multiple" data-placeholder="-- Select Proses --" required>
-                                ${prosesOptions}
-                            </select>
-                        </div>
-                    </div>
-                `);
-
-                $('#proses_ids').select2({
-                    dropdownParent: $('#modalMesin') // Penting agar dropdown muncul di atas modal
-                });
-
-                $('#modalMesin').modal('show');
-
-            });
-        }
-
-        function editRuang(id) {
-            // isEdit_temp = 1;
-            id_temp = id;
-            $('#formMesin')[0].reset();  // clear the form
-            $('#titleModalMesin').html('Edit Mesin');
-            $('#formMesin').find('input[name="_method"]').remove();
-
-            $('#formMesin').attr('action', `{{ url('v1/mesin/update') }}/${id}`);
-            $('#formMesin').attr('method', 'POST');
-
-            $('#formMesin').append('<input type="hidden" name="_method" value="PUT">');
-
-            $('#bodyModalMesin').html(`
-                <div class="row align-items-center mb-3">
-                    <label for="kodeMesin" class="col-sm-4 col-form-label">Kode Mesin<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="kodeMesin" name="kodeMesin" required placeholder="Masukkan kode mesin">
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="name" class="col-sm-4 col-form-label">Nama Mesin<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="name" name="name" required placeholder="Masukkan nama mesin">
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="speed" class="col-sm-4 col-form-label">Speed</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="jumlahOperator" class="col-sm-4 col-form-label">Jumlah Operator<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="number" class="form-control" id="jumlahOperator" name="jumlahOperator" min="1" value="1" required>
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="proses_ids" class="col-sm-4 col-form-label">Proses<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <select class="form-control form-select" id="proses_ids" name="proses_ids[]" multiple="multiple" required>
-                        </select>
-                    </div>
-                </div>
-            `);
-
-            // Ambil data dari server untuk diisikan ke form
-            let url = `{{ url('v1/mesin/edit') }}/${id}`;
-            $.get(url, function (response) {
-                let mesin = response.mesin;
-                let allProses = response.proses;
-
-                // --- mengisi field input biasa ---
-                $('#kodeMesin').val(mesin.kodeMesin);
-                $('#name').val(mesin.name);
-                $('#kapasitas').val(mesin.kapasitas);
-                $('#speed').val(mesin.speed);
-                $('#jumlahOperator').val(mesin.jumlahOperator);
-                
-                // --- untuk mengambil semua proses pada mesin tersebut ---
-                let selectedProsesIds = mesin.proses.map(function(p) {
-                    return p.id;
-                });
-
-                // --- membuat dropdown proses ---
-                let prosesSelect = $('#proses_ids');
-                prosesSelect.empty(); // Kosongkan dulu
-                allProses.forEach(function(proses) {
-                    // cek apakah id proses ini ada di dalam array 'selectedProsesIds'
-                    let isSelected = selectedProsesIds.includes(proses.id);
-                    prosesSelect.append(`<option value="${proses.id}" ${isSelected ? 'selected' : ''}>${proses.name}</option>`);
-                });
-
-                //agar tampilan dropdown lebih baik
-                $('#proses_ids').select2({
-                    dropdownParent: $('#modalMesin')
-                });
-
-                // tampilkan modal setelah semuanya siap
-                $('#modalMesin').modal('show');
-                
-            });
-        }
-
-        function deleteRuang(id) {
-            Swal.fire({
-                text: "Are you sure you want to delete this Machine?",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonText: "Yes, delete it!",
-                cancelButtonText: "No, cancel!",
-            }).then(function (result) {
-                if (result.value) {
-                    $.ajax({
-                        url: "{{ route('v1.mesin.destroy') }}",
-                        type: "POST",
-                        data: {
-                            id: id,
-                            _token: "{{ csrf_token() }}",
-                        },
-                        success: function (response) {
-                            $("#dt_mesin").DataTable().ajax.reload(null, false);
-                            Swal.fire("Deleted!", response.message, "success");
-                        },
-                        error: function (xhr) {
-                            Swal.fire("Error!", xhr.responseJSON.message, "error");
-                        },
-                    });
-                } else if (result.dismiss === "cancel") {
-                    Swal.fire("Cancelled", "Your data is safe :)", "error");
-                }
-            });
-        }
     </script>
 @endsection

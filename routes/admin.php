@@ -24,6 +24,13 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermissi
         Route::get('edit/{id}', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'edit'])->name('edit');
         Route::post('update/{id}', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'update'])->name('update');
         Route::post('destroy', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'destroy'])->name('destroy');
+        Route::get('createUser/{id}', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'createUser'])->name('createUser');
+        Route::get('getDataUser', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'getDataTableUser'])->name('getDataTableUser');
+        Route::post('storeUser/{id}', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'storeUser'])->name('storeUser');
+        Route::get('editUser/{id}', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'editUser'])->name('editUser');
+        Route::post('updateUser/{id}', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'updateUser'])->name('updateUser');
+        Route::post('destroyUser', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'destroyUser'])->name('destroyUser');
+        Route::get('getAvailableUsers', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'getAvailableUsers'])->name('getAvailableUsers');
     });
 
     // department
@@ -61,5 +68,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermissi
         Route::get('edit/{id}', [App\Http\Controllers\Admin\UserController::class, 'edit'])->name('edit');
         Route::put('update/{id}', [App\Http\Controllers\Admin\UserController::class, 'update'])->name('update');
         Route::post('destroy', [App\Http\Controllers\Admin\UserController::class, 'destroy'])->name('destroy');
+        Route::get('search', [App\Http\Controllers\Admin\UserController::class, 'search'])->name('search');
     });
 });
