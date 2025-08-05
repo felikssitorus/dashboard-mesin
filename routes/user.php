@@ -9,7 +9,6 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
 
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::get('getDataMesin', [App\Http\Controllers\DashboardController::class, 'getDataTableMesin'])->name('getDataTableMesin');
-        Route::get('getDashboardDataTableMesin', [App\Http\Controllers\DashboardController::class, 'getDashboardDataTableMesin'])->name('getDashboardDataTableMesin');
     });
 
     Route::prefix('auditTrail')->name('auditTrail.')->middleware(['auth'])->group(function () {
@@ -48,7 +47,6 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
         Route::get('edit/{id}', [App\Http\Controllers\V1\MesinController::class, 'edit'])->name('edit');
         Route::put('update/{id}', [App\Http\Controllers\V1\MesinController::class, 'update'])->name('update');
         Route::post('destroy', [App\Http\Controllers\V1\MesinController::class, 'destroy'])->name('destroy');
-        Route::get('getDashboardDataTableMesin', [App\Http\Controllers\V1\MesinController::class, 'getDashboardDataTableMesin'])->name('getDashboardDataTableMesin');
     });
     
 });

@@ -39,7 +39,7 @@ class DashboardController extends Controller
                     $q->where('proses.id', $request->filter_proses);
                 });
             }
-            $query->latest();
+            // $query->latest();
 
             return DataTables::of($query)
                 ->addIndexColumn()

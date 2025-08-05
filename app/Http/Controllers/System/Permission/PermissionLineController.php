@@ -16,7 +16,7 @@ class PermissionLineController extends Controller
     public function getDataTablePermission(Request $request)
     {
         if ($request->ajax()) {
-            $query = Line::withCount('users')->latest();
+            $query = Line::withCount('users');
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -83,6 +83,14 @@ class PermissionLineController extends Controller
 
             DB::commit();
 
+            // $data = json_decode(auth()->user()->result, true);
+            // (new LogActivityService())->handle([
+            //     'perusahaan' => strtoupper($data['CompName']),
+            //     'user' => strtoupper(auth()->user()->email),
+            //     'tindakan' => 'Tambah Permission Line',
+            //     'catatan' => 'Berhasil menambah permission line ' . $line['name'],
+            // ]);
+
             return response()->json([
                 'success' => true,
                 'message' => 'Permission Line Has Been Created',
@@ -116,6 +124,14 @@ class PermissionLineController extends Controller
             $line->permission()->create(['url' => $url]);
         }
 
+        // $data = json_decode(auth()->user()->result, true);
+        // (new LogActivityService())->handle([
+        //     'perusahaan' => strtoupper($data['CompName']),
+        //     'user' => strtoupper(auth()->user()->email),
+        //     'tindakan' => 'Edit Permission Line',
+        //     'catatan' => 'Berhasil mengubah permission line ' . $line->name,
+        // ]);
+
         return response()->json([
             'success' => true,
             'message' => 'Success Update',
@@ -141,6 +157,14 @@ class PermissionLineController extends Controller
 
         // Hapus line
         $line->delete();
+
+        // $data = json_decode(auth()->user()->result, true);
+        // (new LogActivityService())->handle([
+        //     'perusahaan' => strtoupper($data['CompName']),
+        //     'user' => strtoupper(auth()->user()->email),
+        //     'tindakan' => 'Hapus Permission Line',
+        //     'catatan' => 'Berhasil menghapus permission line ' . $line->name,
+        // ]);
 
         return response()->json([
             'success' => true,
@@ -185,8 +209,6 @@ class PermissionLineController extends Controller
                 $query = User::with(['profile.line']);
             }   
 
-            $query->latest();
-
             return DataTables::of($query)
                 ->addIndexColumn()
                 ->addColumn('line_name', function ($user) {
@@ -213,15 +235,6 @@ class PermissionLineController extends Controller
     public function storeUser(Request $request, $id)
     {
         $line = Line::findOrFail($id);
-        // $userId = $request->input('user_id');
-
-        // if (!$userId) {
-        //     return response()->json([
-        //         'success' => false,
-        //         'message' => 'User ID is required.'
-        //     ]);
-        // }
-
         $validatedData = $request->validate([
             'user_id' => 'required|exists:users,id',
         ]);
@@ -232,6 +245,15 @@ class PermissionLineController extends Controller
                 ['user_id' => $user->id],
                 ['line_id' => $line->id]
             );
+
+            // Log activity
+            // $data = json_decode(auth()->user()->result, true);
+            // (new LogActivityService())->handle([
+            //     'perusahaan' => strtoupper($data['CompName']),
+            //     'user' => strtoupper(auth()->user()->email),
+            //     'tindakan' => 'Tambah User ke Permission Line',
+            //     'catatan' => 'Berhasil menambah user ' . $user->fullname . ' ke permission line ' . $line->name,
+            // ]);
 
             return response()->json([
                 'success' => true,
@@ -264,9 +286,19 @@ class PermissionLineController extends Controller
             $user->profile->delete();
         }
 
+        // Log activity
+        // $data = json_decode(auth()->user()->result, true);
+        // (new LogActivityService())->handle([
+        //     'perusahaan' => strtoupper($data['CompName']),
+        //     'user' => strtoupper(auth()->user()->email),
+        //     'tindakan' => 'Hapus User dari Permission Line',
+        //     'catatan' => 'Berhasil menghapus user ' . $user->fullname . ' dari permission line',
+        // ]);
+
         return response()->json([
             'success' => true,
-            'message' => 'User removed from permission line successfully.'
+            'message' => 'User removed from permission line successfully.',
+            'redirect' => route('admin.permissionLine.index')
         ]);
     }
 

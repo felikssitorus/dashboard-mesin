@@ -48,15 +48,13 @@ class LineController extends Controller
         try {
             Line::create($line);
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Tambah Line',
-                    'catatan' => 'Berhasil menambah ' . $line['name'],
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Tambah Line',
+                'catatan' => 'Berhasil menambah ' . $line['name'],
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -65,18 +63,13 @@ class LineController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                $user = json_decode(auth()->user()->result, true);
-                (new LogActivityService())->handle([
-                    'perusahaan' => strtoupper($data['CompName']),
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Login',
-                    'catatan' => 'Berhasil Login Account',
-                ]);
-            }
-            
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Tambah Line',
+                'catatan' => $th->getMessage() . ' on ' . $line['name'],
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -101,15 +94,13 @@ class LineController extends Controller
             $line = Line::findOrFail($id);
             $line->update($lineData);
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Edit Line',
-                    'catatan' => 'Berhasil mengubah ' . $lineData['name'],
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Edit Line',
+                'catatan' => 'Berhasil mengubah ' . $line->name,
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -118,15 +109,13 @@ class LineController extends Controller
             ]);
         } catch (\Throwable $th) {
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Edit Line',
-                    'catatan' => $th->getMessage(),
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Edit Line',
+                'catatan' => $th->getMessage() . ' on ' . $line->name,
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -142,31 +131,26 @@ class LineController extends Controller
             $line = Line::findOrFail($id);
             $line->delete();
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Hapus Line',
-                    'catatan' => 'Berhasil menghapus ' . $line->name,
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Hapus Line',
+                'catatan' => 'Berhasil menghapus ' . $line->name,
+            ]);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Line Has Been Deleted',
             ]);
         } catch (\Throwable $th) {
-
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Hapus Line',
-                    'catatan' => $th->getMessage(),
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Hapus Line',
+                'catatan' => $th->getMessage() . ' on ' . $line->name,
+            ]);
             
             return response()->json([
                 'success' => false,

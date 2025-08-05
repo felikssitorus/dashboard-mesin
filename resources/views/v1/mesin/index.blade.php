@@ -163,10 +163,10 @@
                     { data: "proses_name", name: "proses.name", orderable: false, searchable: true, width: "5%" },
                     { data: "kodeMesin", name: "kodeMesin", orderable: true, searchable: true, width: "10%" },
                     { data: "name", name: "name", orderable: true, searchable: true },
-                    { data: "jumlahOperator", name: "jumlahOperator", width: "10%" },
-                    { data: "kapasitas", name: "kapasitas", orderable: true, searchable: true, width: "20%" },
-                    { data: "speed", name: "speed", orderable: true, searchable: true, width: "10%" },
-                    { data: "updated_at", name: "updated_at", orderable: true, searchable: true, width: "5%" },
+                    { data: "jumlahOperator", name: "jumlahOperator", width: "5%" },
+                    { data: "kapasitas", name: "kapasitas", orderable: true, searchable: true, width: "15%" },
+                    { data: "speed", name: "speed", orderable: true, searchable: true, width: "15%" },
+                    { data: "updated_at", name: "updated_at", orderable: true, searchable: true, width: "15%" },
                     { data: "inupby", name: "inupby", orderable: true, searchable: true, width: "5%" },
                     { data: "action", orderable: false, searchable: false, width: "15------%" },
                 ],
@@ -206,8 +206,6 @@
                 response.all_proses.forEach(function(proses) {
                     prosesOptions += `<option value="${proses.id}">${proses.name}</option>`;
                 });
-
-                // $userLine = auth()->user()->profile?->line
                 
                 let linesOptions = '';
                 response.all_line.forEach(function(line) {
@@ -263,11 +261,11 @@
                 `);
 
                 $('#proses_ids').select2({
-                    dropdownParent: $('#modalMesin') // Penting agar dropdown muncul di atas modal
+                    dropdownParent: $('#modalMesin') // agar tampilan dropdown lebih baik
                 });
 
                 $('#lines_ids').select2({
-                    dropdownParent: $('#modalMesin') // Penting agar dropdown muncul di atas modal
+                    dropdownParent: $('#modalMesin') // agar tampilan dropdown lebih baik
                 });
 
                 $('#modalMesin').modal('show');

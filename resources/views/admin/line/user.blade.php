@@ -69,7 +69,7 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14"
+                            <input type="text" id="search_dt" class="form-control border-2 w-250px ps-14"
                                 placeholder="Search User" />
                         </div>
                         <table id="dt_user" class="table table-bordered table-striped align-middle table-row-dashed fs-6 gy-5 border rounded">
@@ -147,7 +147,7 @@
             }, 1000); // Adjust the timeout duration as needed
 
             let DT = $("#dt_user").DataTable({
-                order: [[3, 'asc']],
+                order: [[2, 'asc']],
                 processing: false,
                 serverSide: true,
                 ajax: {

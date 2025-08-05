@@ -60,7 +60,7 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14"
+                            <input type="text" id="search_dt" class="form-control border-2 w-250px ps-14"
                                 placeholder="Search User" />
                         </div>
                         <table id="dt_user" class="table table-bordered table-striped align-middle table-row-dashed fs-6 gy-5 border rounded">
@@ -74,6 +74,7 @@
                                     <th>Job Level</th>
                                     <th>Line</th>
                                     <th>Group Name</th>
+                                </tr>
                             </thead>
                             <tbody></tbody>
                         </table>

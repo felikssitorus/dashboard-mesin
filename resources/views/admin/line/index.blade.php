@@ -58,7 +58,7 @@
                                     <span class="path2"></span>
                                 </i>
                             </span>
-                            <input type="text" id="search_dt" class="form-control border border-2 w-250px ps-14"
+                            <input type="text" id="search_dt" class="form-control border-2 w-250px ps-14"
                                 placeholder="Search Report" />
                         </div>
                         <table id="dt_permission_line" class="table table-bordered align-middle table-row-dashed fs-6 gy-5">

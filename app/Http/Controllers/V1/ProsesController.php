@@ -48,15 +48,13 @@ class ProsesController extends Controller
         try {
             Proses::create($proses);
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Tambah Proses',
-                    'catatan' => 'Berhasil menambah data proses',
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Tambah Proses',
+                'catatan' => 'Berhasil menambah data proses ' . $proses['name'],
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -66,15 +64,13 @@ class ProsesController extends Controller
 
         } catch (\Throwable $th) {
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Tambah Proses',
-                    'catatan' => $th->getMessage(),
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Tambah Proses',
+                'catatan' => $th->getMessage() . ' on ' . $proses['name'],
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -99,15 +95,13 @@ class ProsesController extends Controller
             $proses = Proses::findOrFail($id);
             $proses->update($prosesData);
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Edit Proses',
-                    'catatan' => 'Berhasil mengubah data proses',
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Edit Proses',
+                'catatan' => 'Berhasil mengubah data proses ' . $proses->name,
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -115,16 +109,13 @@ class ProsesController extends Controller
                 'redirect' => route('v1.proses.index')
             ]);
         } catch (\Throwable $th) {
-
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Edit Proses',
-                    'catatan' => $th->getMessage(),
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Edit Proses',
+                'catatan' => $th->getMessage() . ' on ' . $proses->name,
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -140,15 +131,13 @@ class ProsesController extends Controller
             $proses = Proses::findOrFail($id);
             $proses->delete();
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Hapus Proses',
-                    'catatan' => 'Berhasil menghapus data proses',
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Hapus Proses',
+                'catatan' => 'Berhasil menghapus data proses ' . $proses->name,
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -156,15 +145,13 @@ class ProsesController extends Controller
             ]);
         } catch (\Throwable $th) {
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Hapus Proses',
-                    'catatan' => $th->getMessage(),
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Hapus Proses',
+                'catatan' => $th->getMessage() . ' on ' . $proses->name,
+            ]); 
 
             return response()->json([
                 'success' => false,

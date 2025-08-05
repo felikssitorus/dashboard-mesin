@@ -45,7 +45,6 @@ class MesinController extends Controller
                     $q->where('proses.id', $request->filter_proses);
                 });
             }
-            $query->latest();
 
             return DataTables::of($query)
                 ->addIndexColumn()
@@ -54,7 +53,7 @@ class MesinController extends Controller
                         return '-';
                     }
                     return $mesin->proses->map(function($item) {
-                        return '<span class="badge badge-light-primary m-1">' . $item->name . '</span>';
+                        return '<span class="badge badge-light m-1">' . $item->name . '</span>';
                     })->implode(' ');
                 })
                 ->addColumn('line_name', function ($mesin) {
@@ -77,55 +76,6 @@ class MesinController extends Controller
                 })
                 ->rawColumns([
                     'action', 'proses_name', 'kapasitas', 'speed', 'line_name', 'updated_at'
-                ])
-                ->make(true);
-        }
-    }
-
-    public function getDashboardDataTableMesin(Request $request)
-    {
-        if ($request->ajax()) {
-            $query = Mesin::with(['proses', 'line']);
-
-            // Terapkan filter Line jika ada
-            if ($request->filled('filter_lines')) {
-                $query->where('line_id', $request->filter_lines);
-            }
-
-            // Terapkan filter Proses jika ada
-            if ($request->filled('filter_proses')) {
-                $query->whereHas('proses', function($q) use ($request) {
-                    $q->where('proses.id', $request->filter_proses);
-                });
-            }
-            $query->latest();
-
-            return DataTables::of($query)
-                ->addIndexColumn()
-                ->addColumn('proses_name', function ($mesin) {
-                    if ($mesin->proses->isEmpty()) {
-                        return '-';
-                    }
-                    return $mesin->proses->map(function($item) {
-                        return $item->name;
-                    })->implode(' ');
-                })
-                ->addColumn('line_name', function ($mesin) {
-                    return $mesin->line ? $mesin->line->name : '-';
-                })
-                ->editColumn('line_name', function ($mesin) {
-                    return $mesin->line ? $mesin->line->name : '-';
-                })
-                ->editColumn('kapasitas', function($mesin) {
-                    $kapasitas = $mesin->kapasitas ?? '-';
-                    return '<span class="text-muted fw-bold">' . $kapasitas . '</span>';
-                })
-                ->editColumn('speed', function($mesin) {
-                    $speed = $mesin->speed ?? '-';
-                    return '<span class="text-muted fw-bold">' . $speed . '</span>';
-                })
-                ->rawColumns([
-                    'proses_name', 'kapasitas', 'speed', 'line_name'
                 ])
                 ->make(true);
         }
@@ -167,15 +117,13 @@ class MesinController extends Controller
 
             $mesin->proses()->attach($request->proses_ids);
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Tambah Mesin',
-                    'catatan' => 'Berhasil menambah data mesin',
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Tambah Mesin',
+                'catatan' => 'Berhasil menambah data mesin ' . $mesin['name'],
+            ]);
             
             return response()->json([
                 'success' => true,
@@ -183,17 +131,14 @@ class MesinController extends Controller
                 'redirect' => route('v1.mesin.index')
             ]);
 
-        } catch (\Throwable $th) {
-            
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Tambah Mesin',
-                    'catatan' => $th->getMessage(),
-                ]);
-            }
+        } catch (\Throwable $th) { 
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Tambah Mesin',
+                'catatan' => $th->getMessage() . ' ' . $mesin['name'],
+            ]);
 
             return response()->json([
                 'success' => false,
@@ -240,15 +185,13 @@ class MesinController extends Controller
 
             $mesin->proses()->sync($request->proses_ids);
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Edit Mesin',
-                    'catatan' => 'Berhasil mengubah data mesin',
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Edit Mesin',
+                'catatan' => 'Berhasil mengubah data mesin ' . $mesin->name,
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -281,15 +224,13 @@ class MesinController extends Controller
             $mesin = Mesin::findOrFail($id);
             $mesin->delete();
 
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Hapus Mesin',
-                    'catatan' => 'Berhasil menghapus data mesin',
-                ]);
-            }
+            $data = json_decode(auth()->user()->result, true);
+            (new LogActivityService())->handle([
+                'perusahaan' => strtoupper($data['CompName']),
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Hapus Mesin',
+                'catatan' => 'Berhasil menghapus data mesin ' . $mesin->name,
+            ]);
 
             return response()->json([
                 'success' => true,
