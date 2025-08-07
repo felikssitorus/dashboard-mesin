@@ -17,7 +17,7 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
     });
 
     Route::get('contactUs', [App\Http\Controllers\System\ContactUs\ContactUsController::class, 'index'])->name('contactUs');
-
+    
     // data master line
     Route::prefix('line')->name('line.')->group(function () {
         Route::get('', [App\Http\Controllers\V1\LineController::class, 'index'])->name('index');
