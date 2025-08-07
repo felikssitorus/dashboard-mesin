@@ -122,7 +122,7 @@ class MesinController extends Controller
                 'perusahaan' => strtoupper($data['CompName']),
                 'user' => strtoupper(auth()->user()->email),
                 'tindakan' => 'Tambah Mesin',
-                'catatan' => 'Berhasil menambah data mesin ' . $mesin['name'],
+                'catatan' => 'Berhasil menambah data mesin ' . $mesin->name,
             ]);
             
             return response()->json([
@@ -137,7 +137,7 @@ class MesinController extends Controller
                 'perusahaan' => strtoupper($data['CompName']),
                 'user' => strtoupper(auth()->user()->email),
                 'tindakan' => 'Tambah Mesin',
-                'catatan' => $th->getMessage() . ' ' . $mesin['name'],
+                'catatan' => $th->getMessage() . ' ' . $mesin->name,
             ]);
 
             return response()->json([

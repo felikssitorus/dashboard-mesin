@@ -17,10 +17,11 @@ class DashboardController extends Controller
 {
     public function index()
     {
+        $mesin = Mesin::with(['proses', 'line'])->get();
         $filter_lines = Line::orderBy('name', 'asc')->get();
         $filter_proses = Proses::orderBy('name', 'asc')->get();
 
-        return view('v1.dashboard', compact('filter_lines', 'filter_proses'));
+        return view('v1.dashboard', compact('filter_lines', 'filter_proses', 'mesin'));
     }
 
     public function getDataTableMesin(Request $request)

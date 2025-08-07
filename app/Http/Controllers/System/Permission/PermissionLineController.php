@@ -16,7 +16,7 @@ class PermissionLineController extends Controller
     public function getDataTablePermission(Request $request)
     {
         if ($request->ajax()) {
-            $query = Line::withCount('users');
+            $query = Line::withCount('users')->latest()->get();
 
             return DataTables::of($query)
                 ->addIndexColumn()

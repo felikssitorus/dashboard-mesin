@@ -7,28 +7,18 @@
     <div id="kt_app_content" class="app-content flex-column-fluid">
         <!--begin::Toolbar-->
         <div id="kt_app_toolbar" class="app-toolbar py-3 py-lg-6">
-            <!--begin::Toolbar container-->
             <div id="kt_app_toolbar_container" class="app-container container-fluid d-flex flex-stack">
-                <!--begin::Page title-->
                 <div class="page-title d-flex flex-column justify-content-center flex-wrap me-3">
-                    <!--begin::Title-->
                     <h1 class="page-heading d-flex text-dark fw-bold fs-3 flex-column justify-content-center my-0">
                         Dashboard
                     </h1>
-                    <!--end::Title-->
-                    <!--begin::Breadcrumb-->
                     <ul class="breadcrumb breadcrumb-separatorless fw-semibold fs-7 my-0 pt-1">
-                        <!--begin::Item-->
                         <li class="breadcrumb-item text-muted">
                             <a href="#" class="text-muted text-hover-primary">Home</a>
                         </li>
-                        <!--end::Item-->
                     </ul>
-                    <!--end::Breadcrumb-->
                 </div>
-                <!--end::Page title-->
             </div>
-            <!--end::Toolbar container-->
         </div>
         <!--end::Toolbar-->
 
@@ -39,86 +29,69 @@
                     <div class="card-title">Data Mesin</div>
                 </div>
                 <div class="card-body">
-                    <div class="card-content">
-                        <div class="d-flex flex-wrap gap-2 justify-content-start align-items-center py-5">
+                    <div class="d-flex flex-wrap gap-2 justify-content-start align-items-center py-5">
 
-                            <div class="d-flex align-items-center">
-                                <label for="filterLines" class="form-label me-2 mb-0">Line:</label>
-                                <select id="filterLines" class="form-select form-select-sm w-150px">
-                                    <option value="">Semua Line</option>
-                                    @foreach ($filter_lines as $line)
-                                        <option value="{{ $line->id }}">{{ $line->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="d-flex align-items-center">
-                                <label for="filterProses" class="form-label mx-2 mb-0">Proses:</label>
-                                <select id="filterProses" class="form-select form-select-sm w-150px">
-                                    <option value="">Semua Proses</option>
-                                    @foreach ($filter_proses as $proses)
-                                        <option value="{{ $proses->id }}">{{ $proses->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="d-flex align-items-center position-relative ms-auto">
-                                <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"><span class="path1"></span><span class="path2"></span></i>
-                                <input type="text" id="search_dt" class="form-control form-control-sm w-250px ps-12" placeholder="Search Mesin" />
-                            </div>
-
+                        <div class="form-group">
+                            <label for="filterLines" class="form-label me-2 mb-0">Line:</label>
+                            <select id="filterLines" class="form-select form-select-sm w-200px">
+                                <option value="">Semua Line</option>
+                                @foreach ($filter_lines as $line)
+                                    <option value="{{ $line->id }}">{{ $line->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        
-                        <table id="dt_mesin" class="table table-bordered table-striped align-middle table-row-dashed fs-6 gy-5 border rounded">
-                            <thead>
-                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th style="width: 50px;">NO</th>
-                                    <th>Line</th>
-                                    <th>Proses</th>
-                                    <th>Kode Mesin</th>
-                                    <th>Nama Mesin</th>
-                                    <th>Jumlah Operator</th>
-                                    <th>Kapasitas</th>
-                                    <th>Speed</th>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
 
-                        <!--begin::modal mesin-->
-                        <div class="modal fade" tabindex="-1" id="modalMesin">
-                            <form id="formMesin">
-                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h3 class="modal-title" id="titleModalMesin"></h3>
-
-                                            <!--begin::Close-->
-                                            <div class="btn btn-icon btn-sm ms-2" data-bs-dismiss="modal" aria-label="Close">
-                                                <i class="fas fa-times text-dark"></i>
-                                            </div>
-                                            <!--end::Close-->
-                                        </div>
-                                        
-                                        <div class="modal-body" id="bodyModalMesin"></div>
-
-                                        <div class="modal-footer">
-                                            <div class="me-auto">
-                                                <small class="fst-italic"><span class="text-danger">* Tidak boleh kosong</span></small>
-                                            </div>
-                                            <button type="button" class="btn btn-sm btn-light btn-action" type="button" data-bs-dismiss="modal" id="btnBatal" onclick="" style="margin-right: 10px;">
-                                                Batal
-                                            </button>
-                                            <button type="submit" class="btn btn-sm btn-primary btn-action" id="btnSimpan" onclick="">
-                                                Simpan
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                        <div class="form-group">
+                            <label for="filterProses" class="form-label mx-2 mb-0">Proses:</label>
+                            <select id="filterProses" class="form-select form-select-sm w-200px">
+                                <option value="">Semua Proses</option>
+                                @foreach ($filter_proses as $proses)
+                                    <option value="{{ $proses->id }}">{{ $proses->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
-                        <!--end::modal mesin -->
+                    
+                        <div class="d-flex align-items-center position-relative ms-auto">
+                            <input type="text" id="search_dt" class="form-control form-control-sm w-250px" placeholder="Search Mesin" />
+                            <i class="ki-duotone ki-magnifier fs-3 position-absolute ms-4"></i>
+                        </div>
 
                     </div>
+
+                    <div class="row">
+                        @foreach ($mesin as $item)
+                            <div class="col-lg-4 col-md-6 mb-4 machine-card-wrapper"
+                                 data-line-id="{{ $item->line_id }}"
+                                 data-proses-ids="{{ $item->proses->pluck('id')->implode(',') }}"
+                                 data-name="{{ $item->name }}"
+                                 data-kode-mesin="{{ $item->kodeMesin }}">
+                                <div class="card" style="text-align: center;  border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+                                    <div class="card-body text-center">
+                                        <i class="ki-duotone ki-calculator" style="font-size: 200px;">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                            <span class="path3"></span>
+                                            <span class="path4"></span>
+                                            <span class="path5"></span>
+                                            <span class="path6"></span>
+                                        </i>
+                                        <p class="card-text">{{ $item->line->name }}</p>
+                                        <p class="card-text text-gray-700 pt-1 fw-semibold fs-7">{{ $item->kodeMesin }}</p>
+                                        <h5 class="card-title mt-3">{{ $item->name }}</h5>
+                                        <p class="card-text">Proses: 
+                                            @foreach ($item->proses as $proses)
+                                                <span class="badge badge-light">{{ $proses->name }}</span>
+                                            @endforeach
+                                        </p>
+                                        <p class="card-text">Kapasitas: <strong>{{ $item->kapasitas }}</strong></p>
+                                        <p class="card-text">Speed: <strong>{{ $item->speed }}</strong></p>
+                                        <p class="card-text">{{ $item->jumlahOperator }} Operator</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -127,60 +100,46 @@
     <!--end::Content-->
 @endsection
 
-
 @section('scripts')
-    <script src="{{asset("/assets/plugins/custom/datatables/datatables.bundle.js")}}"></script>
     <script>
-
-        $.ajaxSetup({
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
-        });
-
-        const _URL = "{{ route('v1.dashboard.getDataTableMesin') }}";
-
         $(document).ready(function () {
-            $('.page-loading').fadeIn();
-            setTimeout(function () {
-                $('.page-loading').fadeOut();
-            }, 1000); // Adjust the timeout duration as needed
+            function filterCards() {
+                let lineFilter = $('#filterLines').val();
+                let prosesFilter = $('#filterProses').val();
+                let searchFilter = $('#search_dt').val().toLowerCase().trim();
 
-            let DT = $("#dt_mesin").DataTable({
-                order: [[1, 'asc']],
-                processing: false,
-                serverSide: true,
-                ajax: {
-                    url: _URL,
-                    data: function (d) {
-                        d.filter_lines = $('#filterLines').val();
-                        d.filter_proses = $('#filterProses').val();
-                    },
-                },
-                columns: [
-                    { data: "DT_RowIndex", orderable: false, searchable: false, width: "5%" },
-                    { data: "line_name", name: "line.name", orderable: false, searchable: true, width: "5%" },
-                    { data: "proses_name", name: "proses.name", orderable: false, searchable: true, width: "5%" },
-                    { data: "kodeMesin", name: "kodeMesin", orderable: true, searchable: true, width: "10%" },
-                    { data: "name", name: "name", orderable: true, searchable: true },
-                    { data: "jumlahOperator", name: "jumlahOperator", width: "10%" },
-                    { data: "kapasitas", name: "kapasitas", orderable: true, searchable: true, width: "20%" },
-                    { data: "speed" },
-                ],
-                columnDefs: [
-                    {
-                        targets: 0,
-                        render: function (data, type, row, meta) {
-                            return meta.row + meta.settings._iDisplayStart + 1; // Calculate the row index
-                        },
-                    },
-                ],
-            });
+                $('.machine-card-wrapper').each(function() {
+                    let card = $(this);
+                    let lineId = card.data('line-id');
+                    let prosesIds = card.data('proses-ids');
+                    let name = card.data('name');
+                    let nameStr = String(name).toLowerCase();
+                    let kodeMesin = card.data('kode-mesin');
+                    let kodeMesinStr = String(kodeMesin).toLowerCase();
+                    // if(typeof kodeMesin === 'string') {
+                    //     name = name.toLowerCase();
+                    //     kodeMesin = kodeMesin.toLowerCase();
+                    // }
+                    // else {
+                    //     console.log('Name is not a string:', name);
+                    //     console.log('Kode Mesin is not a string:', kodeMesin);
+                    // }
 
-            $('#filterLines, #filterProses').on('change', function() {
-                DT.ajax.reload(); // Muat ulang data tabel
-            });
+                    let lineMatch = (lineFilter === "") || (lineId == lineFilter);
+                    let prosesMatch = (prosesFilter === "") || (prosesIds.split(',').includes(prosesFilter));
+                    let searchMatch = (nameStr.includes(searchFilter)) || (kodeMesinStr.includes(searchFilter));
 
-            $('#search_dt').on('keyup', function () {
-                DT.search(this.value).draw();
+                    if (lineMatch && prosesMatch && searchMatch) {
+                        card.show();
+                    } else {
+                        card.hide();
+                    }
+                });
+            }
+
+            // Terapkan filter saat dropdown atau search box berubah
+            $('#filterLines, #filterProses, #search_dt').on('change keyup', function() {
+                filterCards();
             });
         });
     </script>
