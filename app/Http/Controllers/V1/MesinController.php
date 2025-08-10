@@ -9,6 +9,7 @@ use App\Models\Line;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use App\Services\System\LogActivityService;
@@ -103,7 +104,17 @@ class MesinController extends Controller
             'speed'             => 'nullable|string',
             'jumlahOperator'    => 'required|integer',
             'proses_ids'        => 'required|array',
+            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        // handle image upload if exists
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $originalName = $file->getClientOriginalName();
+            $fileName = time() . '_' . $originalName;
+            $path = $file->storeAs('mesin_images', $fileName, 'public');
+            $validatedData['image'] = $path;
+        }
 
         try {
             $mesin = Mesin::create([
@@ -113,6 +124,7 @@ class MesinController extends Controller
                 'kapasitas'      => $validatedData['kapasitas'] ?? null,
                 'speed'          => $validatedData['speed'] ?? null,
                 'jumlahOperator' => $validatedData['jumlahOperator'],
+                'image'          => $validatedData['image'] ?? null,
             ]);
 
             $mesin->proses()->attach($request->proses_ids);
@@ -155,13 +167,15 @@ class MesinController extends Controller
         return response()->json([
             'userLine' => $userLine,
             'mesin' => $mesin,
-            'proses' => $allProses,
+            'all_proses' => $allProses,
         ]);
     }
 
     public function update(Request $request, $id)
     {
-       $validatedData = $request->validate([
+        $mesin = Mesin::findOrFail($id);
+
+        $validatedData = $request->validate([
             'line_id'          => 'required|exists:lines,id',
             'proses_ids'        => 'required|array',
             'kodeMesin'         => 'required|string',
@@ -169,11 +183,25 @@ class MesinController extends Controller
             'kapasitas'         => 'nullable|string',
             'speed'             => 'nullable|string',
             'jumlahOperator'    => 'required|integer',
+            'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
+        // handle image upload if exists
+        if ($request->hasFile('image')) {
+            if ($mesin->image) {
+                Storage::disk('public')->delete($mesin->image);
+            }
+            $file = $request->file('image');
+            $originalName = $file->getClientOriginalName();
+            $fileName = time() . '_' . $originalName;
+            $path = $file->storeAs('mesin_images', $fileName, 'public');
+            $validatedData['image'] = $path;
+        }
+        else {
+            $validatedData['image'] = $mesin->image;
+        }
+
         try {
-            $mesin = Mesin::findOrFail($id);
-            
             $mesin->update([
                 'line_id'        => $validatedData['line_id'],
                 'kodeMesin'      => $validatedData['kodeMesin'],
@@ -181,6 +209,7 @@ class MesinController extends Controller
                 'kapasitas'      => $validatedData['kapasitas'] ?? null,
                 'speed'          => $validatedData['speed'] ?? null,
                 'jumlahOperator' => $validatedData['jumlahOperator'],
+                'image'          => $validatedData['image'] ?? null,
             ]);
 
             $mesin->proses()->sync($request->proses_ids);
@@ -222,6 +251,12 @@ class MesinController extends Controller
         $id = $request->input('id');
         try {
             $mesin = Mesin::findOrFail($id);
+
+            // hapus image jika ada
+            if ($mesin->image) {
+                Storage::disk('public')->delete($mesin->image);
+            }
+            
             $mesin->delete();
 
             $data = json_decode(auth()->user()->result, true);

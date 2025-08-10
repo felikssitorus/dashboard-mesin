@@ -186,6 +186,7 @@
             $('#search_dt').on('keyup', function () {
                 DT.search(this.value).draw();
             });
+
         });
 
         // let isEdit_temp = 0;
@@ -257,6 +258,12 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="image" class="col-sm-4 col-form-label">Image</label>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        </div>
+                    </div>
                 `);
 
                 $('#proses_ids').select2({
@@ -273,71 +280,102 @@
         }
 
         function editRuang(id) {
-            // isEdit_temp = 1;
-            id_temp = id;
-            $('#formMesin')[0].reset();  // clear the form
+            // 1. Kosongkan form dan siapkan modal terlebih dahulu
+            $('#formMesin')[0].reset();
             $('#titleModalMesin').html('Edit Mesin');
             $('#formMesin').find('input[name="_method"]').remove();
-
-            $('#formMesin').attr('action', `{{ url('v1/mesin/update') }}/${id}`);
+            $('#formMesin').attr('action', `{{ url('v1/mesin/update') }}/${id}`); // Gunakan URL yang benar
             $('#formMesin').attr('method', 'POST');
-
             $('#formMesin').append('<input type="hidden" name="_method" value="PUT">');
 
-            $('#bodyModalMesin').html(`
-                <div class="row align-items-center mb-3">
-                    <label for="line_id" class="col-sm-4 col-form-label">Line<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="line_name" name="line_name" readonly style="cursor: not-allowed">
-                        <input type="hidden" id="line_id" name="line_id">
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="kodeMesin" class="col-sm-4 col-form-label">Kode Mesin<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="kodeMesin" name="kodeMesin" required placeholder="Masukkan kode mesin">
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="name" class="col-sm-4 col-form-label">Nama Mesin<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="name" name="name" required placeholder="Masukkan nama mesin">
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="speed" class="col-sm-4 col-form-label">Speed</label>
-                    <div class="col-sm-8">
-                        <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="jumlahOperator" class="col-sm-4 col-form-label">Jumlah Operator<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <input type="number" class="form-control" id="jumlahOperator" name="jumlahOperator" min="1" value="1" required>
-                    </div>
-                </div>
-                <div class="row align-items-center mb-3">
-                    <label for="proses_ids" class="col-sm-4 col-form-label">Proses<span class="text-danger">*</span></label>
-                    <div class="col-sm-8">
-                        <select class="form-control form-select" id="proses_ids" name="proses_ids[]" multiple="multiple" required>
-                        </select>
-                    </div>
-                </div>
-            `);
+            // Kosongkan body modal dan tampilkan pesan loading
+            $('#bodyModalMesin').html('<p class="text-center">Loading data...</p>');
+            $('#modalMesin').modal('show');
 
-            // Ambil data dari server untuk diisikan ke form
-            let url = `{{ url('v1/mesin/edit') }}/${id}`;
+            // 2. Ambil data dari server
+            let url = `{{ url('v1/mesin/edit') }}/${id}`; // Gunakan rute 'edit' yang benar
             $.get(url, function (response) {
                 let mesin = response.mesin;
-                let allProses = response.proses;
+                let allProses = response.all_proses; // Sesuaikan dengan key dari controller
+                
+                // 3. Siapkan HTML untuk menampilkan gambar saat edit
+                let currentImageHtml = '';
+                if (mesin.image) {
+                    currentImageHtml = `
+                        <div class="row align-items-center mb-3">
+                            <label class="col-sm-4 col-form-label">Current Image</label>
+                            <div class="col-sm-8">
+                                <img src="{{ asset('storage') }}/${mesin.image}" alt="${mesin   .name}" class="img-fluid mb-2" style="max-height: 200px; max-width: 100%;">
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    currentImageHtml = `
+                        <div class="row align-items-center mb-3">
+                            <label class="col-sm-4 col-form-label">Current Image</label>
+                            <div class="col-sm-8">
+                                <p class="text-muted">No image available</p>
+                            </div>
+                        </div>
+                    `;
+                }
 
-                // --- mengisi field input biasa ---
+                // 3. Buat kerangka HTML form di sini
+                $('#bodyModalMesin').html(`
+                    <div class="row align-items-center mb-3">
+                        <label for="line_id" class="col-sm-4 col-form-label">Line<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="line_name" name="line_name" readonly style="cursor: not-allowed">
+                            <input type="hidden" id="line_id" name="line_id">
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="kodeMesin" class="col-sm-4 col-form-label">Kode Mesin<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="kodeMesin" name="kodeMesin" required placeholder="Masukkan kode mesin">
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="name" class="col-sm-4 col-form-label">Nama Mesin<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="name" name="name" required placeholder="Masukkan nama mesin">
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="speed" class="col-sm-4 col-form-label">Speed</label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="jumlahOperator" class="col-sm-4 col-form-label">Jumlah Operator<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control" id="jumlahOperator" name="jumlahOperator" min="1" value="1" required>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="proses_ids" class="col-sm-4 col-form-label">Proses<span class="text-danger">*</span></label>
+                        <div class="col-sm-8">
+                            <select class="form-control form-select" id="proses_ids" name="proses_ids[]" multiple="multiple" required>
+                            </select>
+                        </div>
+                    </div>
+                    ${currentImageHtml}
+                    <div class="row align-items-center mb-3">
+                        <label for="image" class="col-sm-4 col-form-label">Image</label>
+                        <div class="col-sm-8">
+                            <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        </div>
+                    </div>
+                `);
+
+                // 4. Isi semua field dengan data yang diterima
                 $('#line_name').val(mesin.line.name);
                 $('#line_id').val(mesin.line.id);
                 $('#kodeMesin').val(mesin.kodeMesin);
@@ -345,29 +383,24 @@
                 $('#kapasitas').val(mesin.kapasitas);
                 $('#speed').val(mesin.speed);
                 $('#jumlahOperator').val(mesin.jumlahOperator);
-                
-                // --- untuk mengambil semua proses pada mesin tersebut ---
-                let selectedProsesIds = mesin.proses.map(function(p) {
-                    return p.id;
-                });
 
-                // --- membuat dropdown proses ---
+                // 6. Isi dan pilih dropdown Proses
                 let prosesSelect = $('#proses_ids');
-                prosesSelect.empty(); // Kosongkan dulu
+                prosesSelect.empty();
+                let selectedProsesIds = mesin.proses.map(p => p.id);
                 allProses.forEach(function(proses) {
-                    // cek apakah id proses ini ada di dalam array 'selectedProsesIds'
                     let isSelected = selectedProsesIds.includes(proses.id);
                     prosesSelect.append(`<option value="${proses.id}" ${isSelected ? 'selected' : ''}>${proses.name}</option>`);
                 });
 
-                //agar tampilan dropdown lebih baik
+                // 7. Inisialisasi Select2
                 $('#proses_ids').select2({
                     dropdownParent: $('#modalMesin')
                 });
 
-                // tampilkan modal setelah semuanya siap
-                $('#modalMesin').modal('show');
-                
+            }).fail(function() {
+                // Handle jika AJAX gagal
+                $('#bodyModalMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
             });
         }
 

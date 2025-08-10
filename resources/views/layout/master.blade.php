@@ -111,7 +111,7 @@
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">
                                             @php
-$maintenance = App\Models\MaintenanceMode::first();
+                                                $maintenance = App\Models\MaintenanceMode::first();
                                             @endphp
                                             @if ($maintenance->maintenance == true)
                                                 <button id='btnMt' class="btn btn-light-danger btn-sm fs-5" data-bs-toggle="tooltip" data-bs-placement="right" title="Maintenance Mode is Active!">
@@ -169,10 +169,10 @@ $maintenance = App\Models\MaintenanceMode::first();
                                                 {{-- Notify --}}
                                                 @forelse (auth()->user()->notify() as $notif)
                                                     @php
-    // Cek apakah notifikasi dari hari ini
-    $isToday = Carbon\Carbon::parse($notif->created_at)->isToday();
-    // Format waktu relative seperti "2 min ago"
-    $relativeTime = Carbon\Carbon::parse($notif->created_at)->diffForHumans();
+                                                        // Cek apakah notifikasi dari hari ini
+                                                        $isToday = Carbon\Carbon::parse($notif->created_at)->isToday();
+                                                        // Format waktu relative seperti "2 min ago"
+                                                        $relativeTime = Carbon\Carbon::parse($notif->created_at)->diffForHumans();
                                                     @endphp
 
                                                     <!--begin::Item-->

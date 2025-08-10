@@ -67,14 +67,18 @@
                                  data-kode-mesin="{{ $item->kodeMesin }}">
                                 <div class="card" style="text-align: center;  border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
                                     <div class="card-body text-center">
-                                        <i class="ki-duotone ki-calculator" style="font-size: 200px;">
-                                            <span class="path1"></span>
-                                            <span class="path2"></span>
-                                            <span class="path3"></span>
-                                            <span class="path4"></span>
-                                            <span class="path5"></span>
-                                            <span class="path6"></span>
-                                        </i>
+                                        @if ($item->image)
+                                            {{-- Jika mesin PUNYA gambar, tampilkan gambar tersebut --}}
+                                            <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="img-fluid rounded" style="height: 200px; width: 100%; object-fit: cover;"/>
+                                        @else
+                                            {{-- Jika TIDAK ADA gambar, tampilkan ikon default --}}
+                                            <i class="ki-duotone ki-calculator text-primary" style="font-size: 200px;">
+                                                <span class="path1"></span><span class="path2"></span>
+                                                <span class="path3"></span><span class="path4"></span>
+                                                <span class="path5"></span><span class="path6"></span>
+                                            </i>
+                                        @endif
+                                        <p class=""></p>
                                         <p class="card-text">{{ $item->line->name }}</p>
                                         <p class="card-text text-gray-700 pt-1 fw-semibold fs-7">{{ $item->kodeMesin }}</p>
                                         <h5 class="card-title mt-3">{{ $item->name }}</h5>
@@ -83,8 +87,19 @@
                                                 <span class="badge badge-light">{{ $proses->name }}</span>
                                             @endforeach
                                         </p>
-                                        <p class="card-text">Kapasitas: <strong>{{ $item->kapasitas }}</strong></p>
-                                        <p class="card-text">Speed: <strong>{{ $item->speed }}</strong></p>
+
+                                        @if ($item->kapasitas)
+                                            <p class="card-text">Kapasitas: <strong>{{ $item->kapasitas }}</strong></p>
+                                        @else
+                                            <p class="card-text">Kapasitas: <strong>-</strong></p>
+                                        @endif
+
+                                        @if ($item->speed)
+                                            <p class="card-text">Speed: <strong>{{ $item->speed }}</strong></p>
+                                        @else
+                                            <p class="card-text">Speed: <strong>-</strong></p>
+                                        @endif
+
                                         <p class="card-text">{{ $item->jumlahOperator }} Operator</p>
                                     </div>
                                 </div>
