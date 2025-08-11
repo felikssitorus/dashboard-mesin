@@ -61,15 +61,27 @@ class MesinController extends Controller
                     return $mesin->line ? $mesin->line->name : '-';
                 })
                 ->addColumn('action', function ($row) {
-                    return '<button class="btn btn-sm btn-icon btn-light-warning me-2" onclick="editRuang(\'' . $row->id . '\')"><i class="ki-duotone ki-notepad-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i></button>
-                        <button class="btn btn-sm btn-icon btn-light-danger" onclick="deleteRuang(\'' . $row->id . '\')"><i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span><span class="path5"></span></i></button>';
+                    $detailBtn = '<button class="btn btn-sm btn-icon btn-light-info me-2" onclick="showDetail(\'' . $row->id . '\')" title="View Details"><i class="ki-duotone ki-eye fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';
+                    $editBtn = '<button class="btn btn-sm btn-icon btn-light-warning me-2" onclick="editRuang(\'' . $row->id . '\')" title="Edit"><i class="ki-duotone ki-notepad-edit fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';
+                    $deleteBtn = '<button class="btn btn-sm btn-icon btn-light-danger" onclick="deleteRuang(\'' . $row->id . '\')" title="Delete"><i class="ki-duotone ki-trash fs-2"><span class="path1"></span><span class="path2"></span><span class="path3"></span><span class="path4"></span></i></button>';
+                    return $detailBtn . $editBtn . $deleteBtn;
                 })
                 ->editColumn('kapasitas', function($mesin) {
-                    $kapasitas = $mesin->kapasitas ?? '-';
+                    $kapasitas = $mesin->kapasitas;
+                    if ($kapasitas) {
+                        $kapasitas = $kapasitas . ' Liter';
+                    } else {
+                        $kapasitas = '-';
+                    }
                     return '<span class="text-muted fw-bold">' . $kapasitas . '</span>';
                 })
                 ->editColumn('speed', function($mesin) {
-                    $speed = $mesin->speed ?? '-';
+                    $speed = $mesin->speed;
+                    if ($speed) {
+                        $speed = $speed . ' RPM';
+                    } else {
+                        $speed = '-';
+                    }
                     return '<span class="text-muted fw-bold">' . $speed . '</span>';
                 })
                 ->editColumn('updated_at', function($mesin) {

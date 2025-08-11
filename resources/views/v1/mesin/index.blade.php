@@ -76,8 +76,6 @@
                                     <th>Jumlah Operator</th>
                                     <th>Kapasitas</th>
                                     <th>Speed</th>
-                                    <th>Updated_at</th>
-                                    <th>Inupby</th>
                                     <th>Action</th>
                             </thead>
                             <tbody></tbody>
@@ -165,9 +163,7 @@
                     { data: "jumlahOperator", name: "jumlahOperator", width: "5%" },
                     { data: "kapasitas", name: "kapasitas", orderable: true, searchable: true, width: "15%" },
                     { data: "speed", name: "speed", orderable: true, searchable: true, width: "15%" },
-                    { data: "updated_at", name: "updated_at", orderable: true, searchable: true, width: "15%" },
-                    { data: "inupby", name: "inupby", orderable: true, searchable: true, width: "5%" },
-                    { data: "action", orderable: false, searchable: false, width: "15------%" },
+                    { data: "action", orderable: false, searchable: false, width: "15%" },
                 ],
                 columnDefs: [
                     {
@@ -235,13 +231,19 @@
                     <div class="row align-items-center mb-3">
                         <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
+                                <span class="input-group-text">Liter</span>
+                            </div>
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
                         <label for="speed" class="col-sm-4 col-form-label">Speed</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
+                                <span class="input-group-text">RPM</span>
+                            </div>
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
@@ -280,25 +282,21 @@
         }
 
         function editRuang(id) {
-            // 1. Kosongkan form dan siapkan modal terlebih dahulu
             $('#formMesin')[0].reset();
             $('#titleModalMesin').html('Edit Mesin');
             $('#formMesin').find('input[name="_method"]').remove();
-            $('#formMesin').attr('action', `{{ url('v1/mesin/update') }}/${id}`); // Gunakan URL yang benar
+            $('#formMesin').attr('action', `{{ url('v1/mesin/update') }}/${id}`); 
             $('#formMesin').attr('method', 'POST');
             $('#formMesin').append('<input type="hidden" name="_method" value="PUT">');
 
-            // Kosongkan body modal dan tampilkan pesan loading
             $('#bodyModalMesin').html('<p class="text-center">Loading data...</p>');
             $('#modalMesin').modal('show');
 
-            // 2. Ambil data dari server
-            let url = `{{ url('v1/mesin/edit') }}/${id}`; // Gunakan rute 'edit' yang benar
+            let url = `{{ url('v1/mesin/edit') }}/${id}`; 
             $.get(url, function (response) {
                 let mesin = response.mesin;
-                let allProses = response.all_proses; // Sesuaikan dengan key dari controller
+                let allProses = response.all_proses;
                 
-                // 3. Siapkan HTML untuk menampilkan gambar saat edit
                 let currentImageHtml = '';
                 if (mesin.image) {
                     currentImageHtml = `
@@ -320,7 +318,6 @@
                     `;
                 }
 
-                // 3. Buat kerangka HTML form di sini
                 $('#bodyModalMesin').html(`
                     <div class="row align-items-center mb-3">
                         <label for="line_id" class="col-sm-4 col-form-label">Line<span class="text-danger">*</span></label>
@@ -344,13 +341,19 @@
                     <div class="row align-items-center mb-3">
                         <label for="kapasitas" class="col-sm-4 col-form-label">Kapasitas</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="kapasitas" name="kapasitas" placeholder="Masukkan kapasitas mesin">
+                                <span class="input-group-text">Liter</span>
+                            </div>
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
                         <label for="speed" class="col-sm-4 col-form-label">Speed</label>
                         <div class="col-sm-8">
-                            <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="speed" name="speed" placeholder="Masukkan speed mesin">
+                                <span class="input-group-text">RPM</span>
+                            </div>
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
@@ -375,7 +378,6 @@
                     </div>
                 `);
 
-                // 4. Isi semua field dengan data yang diterima
                 $('#line_name').val(mesin.line.name);
                 $('#line_id').val(mesin.line.id);
                 $('#kodeMesin').val(mesin.kodeMesin);
@@ -384,7 +386,6 @@
                 $('#speed').val(mesin.speed);
                 $('#jumlahOperator').val(mesin.jumlahOperator);
 
-                // 6. Isi dan pilih dropdown Proses
                 let prosesSelect = $('#proses_ids');
                 prosesSelect.empty();
                 let selectedProsesIds = mesin.proses.map(p => p.id);
@@ -393,13 +394,11 @@
                     prosesSelect.append(`<option value="${proses.id}" ${isSelected ? 'selected' : ''}>${proses.name}</option>`);
                 });
 
-                // 7. Inisialisasi Select2
                 $('#proses_ids').select2({
                     dropdownParent: $('#modalMesin')
                 });
 
             }).fail(function() {
-                // Handle jika AJAX gagal
                 $('#bodyModalMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
             });
         }
@@ -431,6 +430,69 @@
                 } else if (result.dismiss === "cancel") {
                     Swal.fire("Cancelled", "Your data is safe :)", "error");
                 }
+            });
+        }
+
+        function showDetail(id) {
+            $('#titleModalMesin').html('Machine Details');
+            $('#bodyModalMesin').html('<p class="text-center">Loading data...</p>');
+            $('#modalMesin .modal-footer').hide(); 
+            $('#modalMesin').modal('show');
+
+            let url = `{{ url('v1/mesin/edit') }}/${id}`; 
+
+            $.get(url, function (response) {
+                let mesin = response.mesin;
+
+                let prosesList = '<p>Tidak ada proses terkait.</p>';
+                if (mesin.proses && mesin.proses.length > 0) {
+                    prosesList = '<ul class="list-group list-group-flush">';
+                    mesin.proses.forEach(function(p) {
+                        prosesList += `<li class="list-group-item">${p.name}</li>`;
+                    }); 
+                    prosesList += '</ul>';
+                }
+
+                let imageHtml = '<p class="text-muted">No image available</p>';
+                if (mesin.image) {
+                    let imageUrl = `{{ asset('storage') }}/${mesin.image}`;
+                    imageHtml = `<img src="${imageUrl}" alt="${mesin.name}" class="img-fluid rounded" style="max-height: 200px;">`;
+                }
+
+                let updatedAt = mesin.updated_at;
+                if (updatedAt) {
+                    updatedAt = new Date(updatedAt).toLocaleString('id-ID', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                    });
+                } else {
+                    updatedAt = '-';
+                }
+                
+                $('#bodyModalMesin').html(`
+                    <div class="mb-5 flex-row align-items-center items-center justify-center">
+                        ${imageHtml}
+                    </div>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr><th class="w-250px">Line</th><td>${mesin.line ? mesin.line.name : '-'}</td></tr>
+                            <tr>
+                                <th class="align-middle">Proses</th>
+                                <td>${prosesList}</td>
+                            </tr>
+                            <tr><th>Kode Mesin</th><td>${mesin.kodeMesin}</td></tr>
+                            <tr><th>Nama Mesin</th><td>${mesin.name}</td></tr>
+                            <tr><th>Jumlah Operator</th><td>${mesin.jumlahOperator}</td></tr>
+                            <tr><th>Kapasitas</th><td>${mesin.kapasitas || '-'}</td></tr>
+                            <tr><th>Speed</th><td>${mesin.speed || '-'}</td></tr>
+                            <tr><th>Updated At</th><td>${updatedAt}</td></tr>
+                            <tr><th>Input By</th><td>${mesin.inupby || '-'}</td></tr>
+                        </tbody>
+                    </table>
+                `);
+            }).fail(function() {
+                $('#bodyModalMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
             });
         }
     </script>

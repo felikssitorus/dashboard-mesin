@@ -2,6 +2,35 @@
 @section('title')
     Dashboard
 @endsection
+
+@section('styles')
+<style>
+    /* Transisi halus untuk semua card */
+    .machine-card-wrapper .card {
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    /* Efek saat card di-hover */
+    .machine-card-wrapper:hover .card {
+        transform: translateY(-8px); /* Card akan sedikit terangkat */
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Bayangan lebih jelas */
+    }
+
+    /* Transisi halus untuk ikon */
+    .machine-card-wrapper .card i {
+        transition: transform 0.3s ease;
+    }
+    /* Efek saat card di-hover, ikon akan membesar */
+    .machine-card-wrapper:hover .card i {
+        transform: scale(1.1);
+    }
+    
+    /* Efek saat card di-hover, judul berubah warna */
+    .machine-card-wrapper:hover .card .card-title {
+        color: var(--bs-primary); /* Menggunakan warna primer dari template Anda */
+    }
+</style>
+@endsection
+
 @section('main-content')
     <!--begin::Content-->
     <div id="kt_app_content" class="app-content flex-column-fluid">
@@ -65,7 +94,7 @@
                                  data-proses-ids="{{ $item->proses->pluck('id')->implode(',') }}"
                                  data-name="{{ $item->name }}"
                                  data-kode-mesin="{{ $item->kodeMesin }}">
-                                <div class="card" style="text-align: center;  border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+                                <div class="card h-100" style="text-align: center;  border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
                                     <div class="card-body text-center">
                                         @if ($item->image)
                                             {{-- Jika mesin PUNYA gambar, tampilkan gambar tersebut --}}
@@ -79,33 +108,77 @@
                                             </i>
                                         @endif
                                         <p class=""></p>
-                                        <p class="card-text">{{ $item->line->name }}</p>
-                                        <p class="card-text text-gray-700 pt-1 fw-semibold fs-7">{{ $item->kodeMesin }}</p>
-                                        <h5 class="card-title mt-3">{{ $item->name }}</h5>
+                                        <div class="text-center mb-4">
+                                            {{-- PERBAIKAN 1: Dekatkan jarak baris --}}
+                                            <p class="text-muted mb-1" style="font-size: 15px;">{{ $item->line->name }}</p>
+                                            <h5 class="card-title mb-1">{{ $item->kodeMesin }} - {{ $item->name }}</h5>
+                                        </div>
+
                                         <p class="card-text">Proses: 
                                             @foreach ($item->proses as $proses)
                                                 <span class="badge badge-light">{{ $proses->name }}</span>
                                             @endforeach
                                         </p>
-
+        
                                         @if ($item->kapasitas)
-                                            <p class="card-text">Kapasitas: <strong>{{ $item->kapasitas }}</strong></p>
+                                            <p class="card-text">Kapasitas: <strong>{{ $item->kapasitas }} Liter</strong></p>
                                         @else
                                             <p class="card-text">Kapasitas: <strong>-</strong></p>
                                         @endif
 
                                         @if ($item->speed)
-                                            <p class="card-text">Speed: <strong>{{ $item->speed }}</strong></p>
+                                            <p class="card-text">Speed: <strong>{{ $item->speed }} RPM</strong></p>
                                         @else
                                             <p class="card-text">Speed: <strong>-</strong></p>
                                         @endif
 
                                         <p class="card-text">{{ $item->jumlahOperator }} Operator</p>
+
+                                        <div class="d-grid">
+                                            <button class="btn btn-primary" onclick="showDetail('{{ $item->id }}')">
+                                                <i class="fas fa-eye"></i> Detail
+                                            </button>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
                         @endforeach
                     </div>
+
+                    <!--begin::modal mesin-->
+                    <div class="modal fade" tabindex="-1" id="modalMesin">
+                        <form id="formMesin">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title" id="titleModalMesin"></h3>
+
+                                        <!--begin::Close-->
+                                        <div class="btn btn-icon btn-sm ms-2" data-bs-dismiss="modal" aria-label="Close">
+                                            <i class="fas fa-times text-dark"></i>
+                                        </div>
+                                        <!--end::Close-->
+                                    </div>
+                                    
+                                    <div class="modal-body" id="bodyModalMesin"></div>
+
+                                    <div class="modal-footer">
+                                        <div class="me-auto">
+                                            <small class="fst-italic"><span class="text-danger">* Tidak boleh kosong</span></small>
+                                        </div>
+                                        <button type="button" class="btn btn-sm btn-light btn-action" type="button" data-bs-dismiss="modal" id="btnBatal" onclick="" style="margin-right: 10px;">
+                                            Batal
+                                        </button>
+                                        <button type="submit" class="btn btn-sm btn-primary btn-action" id="btnSimpan" onclick="">
+                                            Simpan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!--end::modal mesin -->
 
                 </div>
             </div>
@@ -117,6 +190,10 @@
 
 @section('scripts')
     <script>
+        $.ajaxSetup({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+        });
+
         $(document).ready(function () {
             function filterCards() {
                 let lineFilter = $('#filterLines').val();
@@ -131,14 +208,6 @@
                     let nameStr = String(name).toLowerCase();
                     let kodeMesin = card.data('kode-mesin');
                     let kodeMesinStr = String(kodeMesin).toLowerCase();
-                    // if(typeof kodeMesin === 'string') {
-                    //     name = name.toLowerCase();
-                    //     kodeMesin = kodeMesin.toLowerCase();
-                    // }
-                    // else {
-                    //     console.log('Name is not a string:', name);
-                    //     console.log('Kode Mesin is not a string:', kodeMesin);
-                    // }
 
                     let lineMatch = (lineFilter === "") || (lineId == lineFilter);
                     let prosesMatch = (prosesFilter === "") || (prosesIds.split(',').includes(prosesFilter));
@@ -157,5 +226,68 @@
                 filterCards();
             });
         });
+
+        function showDetail(id) {
+            $('#titleModalMesin').html('Machine Details');
+            $('#bodyModalMesin').html('<p class="text-center">Loading data...</p>');
+            $('#modalMesin .modal-footer').hide(); // Sembunyikan footer simpan/batal
+            $('#modalMesin').modal('show');
+
+            let url = `{{ url('v1/mesin/edit') }}/${id}`; // Kita gunakan endpoint 'edit' yang sudah ada
+
+            $.get(url, function (response) {
+                let mesin = response.mesin;
+
+                let prosesList = '<p>Tidak ada proses terkait.</p>';
+                if (mesin.proses && mesin.proses.length > 0) {
+                    prosesList = '<ul class="list-group list-group-flush">';
+                    mesin.proses.forEach(function(p) {
+                        prosesList += `<li class="list-group-item">${p.name}</li>`;
+                    }); 
+                    prosesList += '</ul>';
+                }
+
+                let imageHtml = '<p class="text-muted">No image available</p>';
+                if (mesin.image) {
+                    let imageUrl = `{{ asset('storage') }}/${mesin.image}`;
+                    imageHtml = `<img src="${imageUrl}" alt="${mesin.name}" class="img-fluid rounded" style="max-height: 200px; justify-content: center; display: block; margin-left: auto; margin-right: auto;">`;
+                }
+
+                let updatedAt = mesin.updated_at;
+                if (updatedAt) {
+                    updatedAt = new Date(updatedAt).toLocaleString('id-ID', {
+                        year: 'numeric',
+                        month: '2-digit',
+                        day: '2-digit',
+                    });
+                } else {
+                    updatedAt = '-';
+                }
+                
+                $('#bodyModalMesin').html(`
+                    <div class="mb-5 flex-row align-items-center items-center justify-center">
+                        ${imageHtml}
+                    </div>
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr><th class="w-250px">Line</th><td>${mesin.line ? mesin.line.name : '-'}</td></tr>
+                            <tr>
+                                <th class="align-middle">Proses</th>
+                                <td>${prosesList}</td>
+                            </tr>
+                            <tr><th>Kode Mesin</th><td>${mesin.kodeMesin}</td></tr>
+                            <tr><th>Nama Mesin</th><td>${mesin.name}</td></tr>
+                            <tr><th>Jumlah Operator</th><td>${mesin.jumlahOperator}</td></tr>
+                            <tr><th>Kapasitas</th><td>${mesin.kapasitas || '-'}</td></tr>
+                            <tr><th>Speed</th><td>${mesin.speed || '-'}</td></tr>
+                            <tr><th>Updated At</th><td>${updatedAt}</td></tr>
+                            <tr><th>Input By</th><td>${mesin.inupby || '-'}</td></tr>
+                        </tbody>
+                    </table>
+                `);
+            }).fail(function() {
+                $('#bodyModalMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
+            });
+        }
     </script>
 @endsection
