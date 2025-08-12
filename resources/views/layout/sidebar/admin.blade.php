@@ -27,7 +27,7 @@
                                 <span class="path5"></span>
                             </i>
                         </span>
-                        <span class="menu-title fw-semibold">Permission Access</span>
+                        <span class="menu-title fw-semibold">Permission Role Access</span>
                     </a>
                     <!--end:Menu link-->
                 </div>
@@ -45,7 +45,7 @@
                     <a class="menu-link {{ request()->is('admin/permissionLine') ? 'active' : '' }}"
                         href="{{ route('admin.permissionLine.index') }}">
                         <span class="menu-icon">
-                            <i class="ki-duotone ki-lock-2 fs-1">
+                            <i class="ki-duotone ki-duotone ki-security-user fs-1">
                                 <span class="path1"></span>
                                 <span class="path2"></span>
                                 <span class="path3"></span>

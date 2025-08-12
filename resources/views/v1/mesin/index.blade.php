@@ -115,6 +115,28 @@
                         </div>
                         <!--end::modal mesin -->
 
+                        <!--begin::modal detail mesin-->
+                        <div class="modal fade" tabindex="-1" id="modalDetailMesin">
+                            <form id="formMesin">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h3 class="modal-title" id="titleModalDetailMesin"></h3>
+
+                                            <!--begin::Close-->
+                                            <div class="btn btn-icon btn-sm ms-2" data-bs-dismiss="modal" aria-label="Close">
+                                                <i class="fas fa-times text-dark"></i>
+                                            </div>
+                                            <!--end::Close-->
+                                        </div>
+                                        
+                                        <div class="modal-body" id="bodyModalDetailMesin"></div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <!--end::modal mesin -->
+
                     </div>
                 </div>
             </div>
@@ -434,12 +456,11 @@
         }
 
         function showDetail(id) {
-            $('#titleModalMesin').html('Machine Details');
-            $('#bodyModalMesin').html('<p class="text-center">Loading data...</p>');
-            $('#modalMesin .modal-footer').hide(); 
-            $('#modalMesin').modal('show');
+            $('#titleModalDetailMesin').html('Machine Details');
+            $('#bodyModalDetailMesin').html('<p class="text-center">Loading data...</p>');
+            $('#modalDetailMesin').modal('show');
 
-            let url = `{{ url('v1/mesin/edit') }}/${id}`; 
+            let url = `{{ url('v1/mesin/edit') }}/${id}`; // Kita gunakan endpoint 'edit' yang sudah ada
 
             $.get(url, function (response) {
                 let mesin = response.mesin;
@@ -456,7 +477,7 @@
                 let imageHtml = '<p class="text-muted">No image available</p>';
                 if (mesin.image) {
                     let imageUrl = `{{ asset('storage') }}/${mesin.image}`;
-                    imageHtml = `<img src="${imageUrl}" alt="${mesin.name}" class="img-fluid rounded" style="max-height: 200px;">`;
+                    imageHtml = `<img src="${imageUrl}" alt="${mesin.name}" class="img-fluid rounded" style="max-height: 200px; justify-content: center; display: block; margin-left: auto; margin-right: auto;">`;
                 }
 
                 let updatedAt = mesin.updated_at;
@@ -470,11 +491,11 @@
                     updatedAt = '-';
                 }
                 
-                $('#bodyModalMesin').html(`
+                $('#bodyModalDetailMesin').html(`
                     <div class="mb-5 flex-row align-items-center items-center justify-center">
                         ${imageHtml}
                     </div>
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-striped border border-4">
                         <tbody>
                             <tr><th class="w-250px">Line</th><td>${mesin.line ? mesin.line.name : '-'}</td></tr>
                             <tr>
@@ -492,7 +513,7 @@
                     </table>
                 `);
             }).fail(function() {
-                $('#bodyModalMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
+                $('#bodyModalDetailMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
             });
         }
     </script>

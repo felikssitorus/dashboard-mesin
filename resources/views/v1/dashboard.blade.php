@@ -4,31 +4,25 @@
 @endsection
 
 @section('styles')
-<style>
-    /* Transisi halus untuk semua card */
-    .machine-card-wrapper .card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    /* Efek saat card di-hover */
-    .machine-card-wrapper:hover .card {
-        transform: translateY(-8px); /* Card akan sedikit terangkat */
-        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15); /* Bayangan lebih jelas */
-    }
-
-    /* Transisi halus untuk ikon */
-    .machine-card-wrapper .card i {
-        transition: transform 0.3s ease;
-    }
-    /* Efek saat card di-hover, ikon akan membesar */
-    .machine-card-wrapper:hover .card i {
-        transform: scale(1.1);
-    }
-    
-    /* Efek saat card di-hover, judul berubah warna */
-    .machine-card-wrapper:hover .card .card-title {
-        color: var(--bs-primary); /* Menggunakan warna primer dari template Anda */
-    }
-</style>
+    <style>
+        /* Gunakan ID container utama untuk meningkatkan spesifisitas */
+        .machine-card-wrapper .machine-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .machine-card-wrapper:hover .machine-card {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+        }
+        .machine-card-wrapper .machine-card i {
+            transition: transform 0.3s ease;
+        }
+        .machine-card-wrapper:hover .machine-card i {
+            transform: scale(1.1);
+        }
+        .machine-card-wrapper:hover .machine-card .card-title {
+            color: var(--bs-primary) !important; /* Tambahkan !important jika perlu */
+        }
+    </style>
 @endsection
 
 @section('main-content')
@@ -87,14 +81,14 @@
 
                     </div>
 
-                    <div class="row">
+                    <div class="card-container row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5">
                         @foreach ($mesin as $item)
-                            <div class="col-lg-4 col-md-6 mb-4 machine-card-wrapper"
+                            <div class="machine-card-wrapper col-lg-4 col-md-6 mb-4"
                                  data-line-id="{{ $item->line_id }}"
                                  data-proses-ids="{{ $item->proses->pluck('id')->implode(',') }}"
                                  data-name="{{ $item->name }}"
                                  data-kode-mesin="{{ $item->kodeMesin }}">
-                                <div class="card h-100" style="text-align: center;  border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
+                                <div class="machine-card card h-100" style="text-align: center;  border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
                                     <div class="card-body text-center">
                                         @if ($item->image)
                                             {{-- Jika mesin PUNYA gambar, tampilkan gambar tersebut --}}
@@ -108,7 +102,7 @@
                                             </i>
                                         @endif
                                         <p class=""></p>
-                                        <div class="text-center mb-4">
+                                        <div class="mb-4">
                                             {{-- PERBAIKAN 1: Dekatkan jarak baris --}}
                                             <p class="text-muted mb-1" style="font-size: 15px;">{{ $item->line->name }}</p>
                                             <h5 class="card-title mb-1">{{ $item->kodeMesin }} - {{ $item->name }}</h5>
@@ -180,6 +174,28 @@
                     </div>
                     <!--end::modal mesin -->
 
+                    <!--begin::modal detail mesin-->
+                    <div class="modal fade" tabindex="-1" id="modalDetailMesin">
+                        <form id="formMesin">
+                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h3 class="modal-title" id="titleModalDetailMesin"></h3>
+
+                                        <!--begin::Close-->
+                                        <div class="btn btn-icon btn-sm ms-2" data-bs-dismiss="modal" aria-label="Close">
+                                            <i class="fas fa-times text-dark"></i>
+                                        </div>
+                                        <!--end::Close-->
+                                    </div>
+                                    
+                                    <div class="modal-body" id="bodyModalDetailMesin"></div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!--end::modal mesin -->
+
                 </div>
             </div>
         </div>
@@ -228,10 +244,9 @@
         });
 
         function showDetail(id) {
-            $('#titleModalMesin').html('Machine Details');
-            $('#bodyModalMesin').html('<p class="text-center">Loading data...</p>');
-            $('#modalMesin .modal-footer').hide(); // Sembunyikan footer simpan/batal
-            $('#modalMesin').modal('show');
+            $('#titleModalDetailMesin').html('Machine Details');
+            $('#bodyModalDetailMesin').html('<p class="text-center">Loading data...</p>');
+            $('#modalDetailMesin').modal('show');
 
             let url = `{{ url('v1/mesin/edit') }}/${id}`; // Kita gunakan endpoint 'edit' yang sudah ada
 
@@ -264,11 +279,11 @@
                     updatedAt = '-';
                 }
                 
-                $('#bodyModalMesin').html(`
+                $('#bodyModalDetailMesin').html(`
                     <div class="mb-5 flex-row align-items-center items-center justify-center">
                         ${imageHtml}
                     </div>
-                    <table class="table table-bordered">
+                    <table class="table table-bordered table-striped border border-4">
                         <tbody>
                             <tr><th class="w-250px">Line</th><td>${mesin.line ? mesin.line.name : '-'}</td></tr>
                             <tr>
@@ -286,7 +301,7 @@
                     </table>
                 `);
             }).fail(function() {
-                $('#bodyModalMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
+                $('#bodyModalDetailMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
             });
         }
     </script>
