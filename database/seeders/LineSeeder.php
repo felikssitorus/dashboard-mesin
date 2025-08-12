@@ -15,7 +15,47 @@ class LineSeeder extends Seeder
     public function run(): void
     {
         Line::create([
+            'name' => 'Line 1',
+            'inupby' => 'tsup@kalbe.co.id'
+        ]);
+
+        Line::create([
+            'name' => 'Line 2',
+            'inupby' => 'tsup@kalbe.co.id'
+        ]);
+
+        Line::create([
+            'name' => 'Line 3',
+            'inupby' => 'tsup@kalbe.co.id'
+        ]);
+
+        Line::create([
+            'name' => 'Line 4',
+            'inupby' => 'tsup@kalbe.co.id'
+        ]);
+
+        Line::create([
+            'name' => 'Line 5',
+            'inupby' => 'tsup@kalbe.co.id'
+        ]);
+
+        Line::create([
+            'name' => 'Line 6',
+            'inupby' => 'tsup@kalbe.co.id'
+        ]);
+
+        Line::create([
+            'name' => 'Line 7',
+            'inupby' => 'tsup@kalbe.co.id'
+        ]);
+
+        Line::create([
             'name' => 'Line 8',
+            'inupby' => 'tsup@kalbe.co.id'
+        ]);
+
+        Line::create([
+            'name' => 'Line 9',
             'inupby' => 'tsup@kalbe.co.id'
         ]);
     }

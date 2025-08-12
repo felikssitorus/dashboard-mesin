@@ -116,6 +116,7 @@ class MesinController extends Controller
             'speed'             => 'nullable|string',
             'jumlahOperator'    => 'required|integer',
             'proses_ids'        => 'required|array',
+            'keterangan'       => 'nullable|string',
             'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -136,6 +137,7 @@ class MesinController extends Controller
                 'kapasitas'      => $validatedData['kapasitas'] ?? null,
                 'speed'          => $validatedData['speed'] ?? null,
                 'jumlahOperator' => $validatedData['jumlahOperator'],
+                'keterangan'     => $validatedData['keterangan'] ?? null,
                 'image'          => $validatedData['image'] ?? null,
             ]);
 
@@ -188,13 +190,14 @@ class MesinController extends Controller
         $mesin = Mesin::findOrFail($id);
 
         $validatedData = $request->validate([
-            'line_id'          => 'required|exists:lines,id',
+            'line_id'           => 'required|exists:lines,id',
             'proses_ids'        => 'required|array',
             'kodeMesin'         => 'required|string',
             'name'              => 'required|string|max:255',
             'kapasitas'         => 'nullable|string',
             'speed'             => 'nullable|string',
             'jumlahOperator'    => 'required|integer',
+            'keterangan'        => 'nullable|string',
             'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -221,6 +224,7 @@ class MesinController extends Controller
                 'kapasitas'      => $validatedData['kapasitas'] ?? null,
                 'speed'          => $validatedData['speed'] ?? null,
                 'jumlahOperator' => $validatedData['jumlahOperator'],
+                'keterangan'     => $validatedData['keterangan'] ?? null,
                 'image'          => $validatedData['image'] ?? null,
             ]);
 
@@ -240,16 +244,6 @@ class MesinController extends Controller
                 'redirect' => route('v1.mesin.index')
             ]);
         } catch (\Throwable $th) {
-
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Edit Mesin',
-                    'catatan' => $th->getMessage(),
-                ]);
-            }
 
             return response()->json([
                 'success' => false,
@@ -284,16 +278,6 @@ class MesinController extends Controller
                 'message' => 'Machine Has Been Deleted',
             ]);
         } catch (\Throwable $th) {
-
-            if (Auth::check()) {
-                $user = Auth::user()->email;
-                (new LogActivityService())->handle([
-                    'perusahaan' => '-',
-                    'user' => strtoupper($user),
-                    'tindakan' => 'Hapus Mesin',
-                    'catatan' => $th->getMessage(),
-                ]);
-            }
 
             return response()->json([
                 'success' => false,

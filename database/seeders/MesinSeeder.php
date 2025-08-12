@@ -12,17 +12,17 @@ class MesinSeeder extends Seeder
     public function run(): void
     {
         $line1 = Line::firstOrCreate([
-            'name' => 'line 1',
+            'name' => 'Line 1',
             'inupby' => 'tsup@kalbe.co.id',
         ]);
 
         $line2 = Line::firstOrCreate([
-            'name' => 'line 2',
+            'name' => 'Line 2',
             'inupby' => 'tsup@kalbe.co.id'
         ]);
 
         $line3 = Line::firstOrCreate([
-            'name' => 'line 3',
+            'name' => 'Line 3',
             'inupby' => 'tsup@kalbe.co.id'
         ]);
 

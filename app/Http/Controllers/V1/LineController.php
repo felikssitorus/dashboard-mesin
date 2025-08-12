@@ -63,14 +63,6 @@ class LineController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-            $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Tambah Line',
-                'catatan' => $th->getMessage() . ' on ' . $line['name'],
-            ]);
-
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -109,14 +101,6 @@ class LineController extends Controller
             ]);
         } catch (\Throwable $th) {
 
-            $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Edit Line',
-                'catatan' => $th->getMessage() . ' on ' . $line->name,
-            ]);
-
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -144,13 +128,6 @@ class LineController extends Controller
                 'message' => 'Line Has Been Deleted',
             ]);
         } catch (\Throwable $th) {
-            $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Hapus Line',
-                'catatan' => $th->getMessage() . ' on ' . $line->name,
-            ]);
             
             return response()->json([
                 'success' => false,

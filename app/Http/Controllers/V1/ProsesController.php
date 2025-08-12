@@ -63,15 +63,6 @@ class ProsesController extends Controller
             ]);
 
         } catch (\Throwable $th) {
-
-            $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Tambah Proses',
-                'catatan' => $th->getMessage() . ' on ' . $proses['name'],
-            ]);
-
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -109,14 +100,6 @@ class ProsesController extends Controller
                 'redirect' => route('v1.proses.index')
             ]);
         } catch (\Throwable $th) {
-            $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Edit Proses',
-                'catatan' => $th->getMessage() . ' on ' . $proses->name,
-            ]);
-
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),
@@ -144,15 +127,6 @@ class ProsesController extends Controller
                 'message' => 'Proses Has Been Deleted',
             ]);
         } catch (\Throwable $th) {
-
-            $data = json_decode(auth()->user()->result, true);
-            (new LogActivityService())->handle([
-                'perusahaan' => strtoupper($data['CompName']),
-                'user' => strtoupper(auth()->user()->email),
-                'tindakan' => 'Hapus Proses',
-                'catatan' => $th->getMessage() . ' on ' . $proses->name,
-            ]); 
-
             return response()->json([
                 'success' => false,
                 'message' => $th->getMessage(),

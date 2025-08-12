@@ -248,7 +248,7 @@
             $('#bodyModalDetailMesin').html('<p class="text-center">Loading data...</p>');
             $('#modalDetailMesin').modal('show');
 
-            let url = `{{ url('v1/mesin/edit') }}/${id}`; // Kita gunakan endpoint 'edit' yang sudah ada
+            let url = `{{ url('v1/dashboard/detail') }}/${id}`; // Kita gunakan endpoint 'edit' yang sudah ada
 
             $.get(url, function (response) {
                 let mesin = response.mesin;
@@ -293,8 +293,9 @@
                             <tr><th>Kode Mesin</th><td>${mesin.kodeMesin}</td></tr>
                             <tr><th>Nama Mesin</th><td>${mesin.name}</td></tr>
                             <tr><th>Jumlah Operator</th><td>${mesin.jumlahOperator}</td></tr>
-                            <tr><th>Kapasitas</th><td>${mesin.kapasitas || '-'}</td></tr>
-                            <tr><th>Speed</th><td>${mesin.speed || '-'}</td></tr>
+                            <tr><th>Kapasitas</th><td>${mesin.kapasitas ? mesin.kapasitas + ' Liter' : '-'}</td></tr>
+                            <tr><th>Speed</th><td>${mesin.speed ? mesin.speed + ' RPM' : '-'}</td></tr>
+                            <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
                             <tr><th>Updated At</th><td>${updatedAt}</td></tr>
                             <tr><th>Input By</th><td>${mesin.inupby || '-'}</td></tr>
                         </tbody>

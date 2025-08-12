@@ -283,6 +283,12 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
+                        <label for="keterangan" class="col-sm-4 col-form-label">Keterangan</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3" placeholder="Masukkan keterangan mesin"></textarea>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
                         <label for="image" class="col-sm-4 col-form-label">Image</label>
                         <div class="col-sm-8">
                             <input type="file" class="form-control" id="image" name="image" accept="image/*">
@@ -391,6 +397,12 @@
                             </select>
                         </div>
                     </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="keterangan" class="col-sm-4 col-form-label">Keterangan</label>
+                        <div class="col-sm-8">
+                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3" placeholder="Masukkan keterangan mesin">${mesin.keterangan || ''}</textarea>
+                        </div>
+                    </div>
                     ${currentImageHtml}
                     <div class="row align-items-center mb-3">
                         <label for="image" class="col-sm-4 col-form-label">Image</label>
@@ -407,6 +419,7 @@
                 $('#kapasitas').val(mesin.kapasitas);
                 $('#speed').val(mesin.speed);
                 $('#jumlahOperator').val(mesin.jumlahOperator);
+                $('#keterangan').val(mesin.keterangan);
 
                 let prosesSelect = $('#proses_ids');
                 prosesSelect.empty();
@@ -505,8 +518,9 @@
                             <tr><th>Kode Mesin</th><td>${mesin.kodeMesin}</td></tr>
                             <tr><th>Nama Mesin</th><td>${mesin.name}</td></tr>
                             <tr><th>Jumlah Operator</th><td>${mesin.jumlahOperator}</td></tr>
-                            <tr><th>Kapasitas</th><td>${mesin.kapasitas || '-'}</td></tr>
-                            <tr><th>Speed</th><td>${mesin.speed || '-'}</td></tr>
+                            <tr><th>Kapasitas</th><td>${mesin.kapasitas ? mesin.kapasitas + ' Liter' : '-'}</td></tr>
+                            <tr><th>Speed</th><td>${mesin.speed ? mesin.speed + ' RPM' : '-'}</td></tr>
+                            <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
                             <tr><th>Updated At</th><td>${updatedAt}</td></tr>
                             <tr><th>Input By</th><td>${mesin.inupby || '-'}</td></tr>
                         </tbody>

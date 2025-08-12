@@ -24,53 +24,13 @@ class DashboardController extends Controller
         return view('v1.dashboard', compact('filter_lines', 'filter_proses', 'mesin'));
     }
 
-    public function getDataTableMesin(Request $request)
+    public function detail($id)
     {
-        if ($request->ajax()) {
-            $query = Mesin::with(['proses', 'line']);
+        $mesin = Mesin::with(['proses', 'line'])->findOrFail($id);
 
-            // Terapkan filter Line jika ada
-            if ($request->filled('filter_lines')) {
-                $query->where('line_id', $request->filter_lines);
-            }
-
-            // Terapkan filter Proses jika ada
-            if ($request->filled('filter_proses')) {
-                $query->whereHas('proses', function($q) use ($request) {
-                    $q->where('proses.id', $request->filter_proses);
-                });
-            }
-            // $query->latest();
-
-            return DataTables::of($query)
-                ->addIndexColumn()
-                ->addColumn('proses_name', function ($mesin) {
-                    if ($mesin->proses->isEmpty()) {
-                        return '-';
-                    }
-                    return $mesin->proses->map(function($item) {
-                        return '<span class="badge badge-light m-1">' . $item->name . '</span>';
-                    })->implode(' ');
-                })
-                ->addColumn('line_name', function ($mesin) {
-                    return $mesin->line ? $mesin->line->name : '-';
-                })
-                ->editColumn('line_name', function ($mesin) {
-                    return $mesin->line ? $mesin->line->name : '-';
-                })
-                ->editColumn('kapasitas', function($mesin) {
-                    $kapasitas = $mesin->kapasitas ?? '-';
-                    return '<span class="text-muted fw-bold">' . $kapasitas . '</span>';
-                })
-                ->editColumn('speed', function($mesin) {
-                    $speed = $mesin->speed ?? '-';
-                    return '<span class="text-muted fw-bold">' . $speed . '</span>';
-                })
-                ->rawColumns([
-                    'proses_name', 'kapasitas', 'speed', 'line_name'
-                ])
-                ->make(true);
-        }
+        return response()->json([
+            'mesin' => $mesin,
+        ]);
     }
 
 }

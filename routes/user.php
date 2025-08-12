@@ -8,6 +8,7 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
     Route::get('', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
 
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
+        Route::get('detail/{id}', [App\Http\Controllers\DashboardController::class, 'detail'])->name('detail');
         Route::get('getDataMesin', [App\Http\Controllers\DashboardController::class, 'getDataTableMesin'])->name('getDataTableMesin');
     });
 
