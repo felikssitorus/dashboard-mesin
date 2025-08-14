@@ -10,6 +10,6 @@ class ContactUsController extends Controller
     public function index()
     {
         // Logic to display the contact us page
-        return view('contact');
+        return view('v1.contact');
     }
 }

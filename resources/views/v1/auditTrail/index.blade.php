@@ -69,16 +69,6 @@
                             </thead>
                             <tbody>
                             </tbody>
-                            <tfoot>
-                                <tr class="text-start text-muted fw-bold fs-7 text-uppercase gs-0">
-                                    <th>#</th>
-                                    <th>Perusahaan</th>
-                                    <th>User</th>
-                                    <th>Action</th>
-                                    <th>Description</th>
-                                    <th>Waktu</th>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>

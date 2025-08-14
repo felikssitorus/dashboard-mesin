@@ -49,6 +49,11 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
         Route::put('update/{id}', [App\Http\Controllers\V1\MesinController::class, 'update'])->name('update');
         Route::post('destroy', [App\Http\Controllers\V1\MesinController::class, 'destroy'])->name('destroy');
     });
+
+    // contact us
+    Route::prefix('contactUs')->name('contactUs.')->group(function () {
+        Route::get('', [App\Http\Controllers\System\ContactUs\ContactUsController::class, 'index'])->name('index');
+    });
     
 });
 

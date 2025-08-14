@@ -71,7 +71,7 @@
                         <!--begin::modal proses-->
                         <div class="modal fade" tabindex="-1" id="modalProses">
                             <form id="formProses">
-                                <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+                                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <h3 class="modal-title" id="titleModalProses"></h3>
@@ -174,9 +174,11 @@
             $('#formProses').attr('method', 'POST');
 
             $('#bodyModalProses').html(`
-                <div class="form-group mb-3">
-                    <label for="name" class="form-label">Nama Proses <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                <div class="row align-items-center mb-3">
+                    <label for="name" class="col-sm-4 col-form-label">Nama Proses <span class="text-danger">*</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
                 </div>
             `);
 
@@ -197,9 +199,11 @@
 
             $('#bodyModalProses').html(`
                 <input type="hidden" name="id" id="id">
-                <div class="form-group mb-3">
-                    <label for="name" class="form-label">Nama Proses <span class="text-danger">*</span></label>
-                    <input type="text" class="form-control" id="name" name="name" required>
+                <div class="row align-items-center mb-3">
+                    <label for="name" class="col-sm-4 col-form-label">Nama Proses <span class="text-danger">*</span></label>
+                    <div class="col-sm-8">
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div> 
                 </div>
             `);
 

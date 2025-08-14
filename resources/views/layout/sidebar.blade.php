@@ -193,11 +193,12 @@
                         <!--end:Menu content-->
                     </div>
                     <!--end:Menu item-->
+                    
                     {{-- Contact Us --}}
                     <!--begin:Menu item-->
                     <div class="menu-item">
                         <!--begin:Menu link-->
-                        <a class="menu-link {{ request()->is('v1/contactUs*') ? 'active' : '' }}" href="{{ route('v1.contactUs') }}">
+                        <a class="menu-link {{ request()->is('v1/contactUs*') ? 'active' : '' }}" href="{{ route('v1.contactUs.index') }}">
                             <span class="menu-icon">
                                 <i class="ki-duotone ki-address-book fs-1">
                                     <span class="path1"></span>
@@ -210,6 +211,7 @@
                         <!--end:Menu link-->
                     </div>
                     <!--end:Menu item-->
+                    
                     {{-- Audit Trail --}}
                     <!--begin:Menu item-->
                     <div class="menu-item">

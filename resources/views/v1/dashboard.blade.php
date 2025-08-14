@@ -41,6 +41,17 @@
                         </li>
                     </ul>
                 </div>
+                <div class="d-flex align-items-center py-1">
+                    <button class="btn btn-primary btn-lg" id="pdfExport-btn">
+                        <i class="ki-duotone ki-file-sheet fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span id="pdf-label" class="fw-semibold">
+                            PDF Export
+                        </span>
+                    </button>
+                </div>
             </div>
         </div>
         <!--end::Toolbar-->
@@ -50,6 +61,9 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Data Mesin</div>
+                    <div class="card-toolbar">
+                        <span class="badge badge-light-primary fs-7 fw-bold">Total Mesin: {{ $mesin->count() }}</span>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2 justify-content-start align-items-center py-5">
@@ -195,6 +209,40 @@
                         </form>
                     </div>
                     <!--end::modal mesin -->
+
+                    <!--begin::Modal - Import Ruangan-->
+                    <div class="modal fade" id="export_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header my-0" id="export_modal_header">
+                                    <label class="fw-semibold fs-4">Download Log</label>
+                                    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                                        <i class="ki-duotone ki-cross fs-1">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                    </div>
+                                </div>
+                                <div class="modal-body px-5">
+                                    <div class="form-group my-2">
+                                        <label class="form-label">Tanggal Awal</label>
+                                        <input type="date" class="form-control" name="tanggal_awal" id="tanggal_awal">
+                                    </div>
+                                    <div class="form-group my-2">
+                                        <label class="form-label">Tanggal Akhir</label>
+                                        <input type="date" class="form-control" name="tanggal_akhir" id="tanggal_akhir">
+                                    </div>
+                                    <div class="form-group my-4">
+                                        <button class="btn btn-primary w-100" type="button" id="submitFormDownload">
+                                            Download Report
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Modal - Import Ruangan-->
 
                 </div>
             </div>

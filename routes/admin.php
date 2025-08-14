@@ -33,16 +33,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'CheckJobLvlPermissi
         Route::get('getAvailableUsers', [App\Http\Controllers\System\Permission\PermissionLineController::class, 'getAvailableUsers'])->name('getAvailableUsers');
     });
 
-    // department
-    Route::prefix('department')->name('dept.')->group(function () {
-        Route::get('', [App\Http\Controllers\System\Department\DepartmentController::class, 'index'])->name('index');
-        Route::get('dt_dept', [App\Http\Controllers\System\Department\DepartmentController::class, 'dt_dept'])->name('dt_dept');
-        Route::post('store', [App\Http\Controllers\System\Department\DepartmentController::class, 'store'])->name('store');
-        Route::post('edit', [App\Http\Controllers\System\Department\DepartmentController::class, 'edit'])->name('edit');
-        Route::post('update', [App\Http\Controllers\System\Department\DepartmentController::class, 'update'])->name('update');
-        Route::post('destroy', [App\Http\Controllers\System\Department\DepartmentController::class, 'destroy'])->name('destroy');
-    });
-
     // subdepartment
     Route::prefix('subdepartment')->name('subdept.')->group(function () {
         Route::get('', [App\Http\Controllers\System\Department\SubDepartmentController::class, 'index'])->name('index');

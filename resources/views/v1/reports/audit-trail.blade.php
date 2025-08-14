@@ -122,10 +122,10 @@
                 @endphp
                     <tr>
                         <td>{{ $index + 1 }}</td>
-                        <td>{{ strtoupper($resultArray['CompName'] ?? '-') }}</td>
-                        <td>{{ strtoupper($item->userEmail) }}</td>
-                        <td>{{ $item->action }}</td>
-                        <td>{{ $item->description }}</td>
+                        <td>{{ strtoupper($item->perusahaan) }}</td>
+                        <td>{{ strtoupper($item->user) }}</td>
+                        <td>{{ $item->tindakan }}</td>
+                        <td>{{ $item->catatan }}</td>
                         <td>{{ \Carbon\Carbon::parse($item->created_at)->translatedFormat('l, '). \Carbon\Carbon::parse($item->created_at)->locale('en-ID')->translatedFormat('d M Y H:i')  }}</td>
                     </tr>
                 @endforeach

@@ -95,8 +95,9 @@ return [
             'prefix_indexes' => true,
             'search_path' => 'public',
             'sslmode' => 'prefer',
+            'timezone' => 'Asia/Jakarta',
             'dump' => [
-                'dump_binary_path' => 'C:\\Program Files\\PostgreSQL\\16\\bin\\',
+                'dump_binary_path' => 'C:\\Program Files\\PostgreSQL\\17\\bin\\',
                 'use_single_transaction',
                 'timeout' => 60 * 5,
                 // 'add_extra_option' => '--format=c',
