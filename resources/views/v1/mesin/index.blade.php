@@ -177,15 +177,15 @@
                     },
                 },
                 columns: [
-                    { data: "DT_RowIndex", orderable: false, searchable: false, width: "5%" },
-                    { data: "line_name", name: "line.name", orderable: false, searchable: true, width: "5%" },
-                    { data: "proses_name", name: "proses.name", orderable: false, searchable: true, width: "5%" },
+                    { data: "DT_RowIndex", orderable: false, searchable: false},
+                    { data: "line_name", name: "line.name", orderable: false, searchable: true},
+                    { data: "proses_name", name: "proses.name", orderable: false, searchable: true},
                     { data: "kodeMesin", name: "kodeMesin", orderable: true, searchable: true, width: "10%" },
                     { data: "name", name: "name", orderable: true, searchable: true },
-                    { data: "jumlahOperator", name: "jumlahOperator", width: "5%" },
-                    { data: "kapasitas", name: "kapasitas", orderable: true, searchable: true, width: "15%" },
-                    { data: "speed", name: "speed", orderable: true, searchable: true, width: "15%" },
-                    { data: "action", orderable: false, searchable: false, width: "15%" },
+                    { data: "jumlahOperator", name: "jumlahOperator"},
+                    { data: "kapasitas", name: "kapasitas", orderable: true, searchable: true},
+                    { data: "speed", name: "speed", orderable: true, searchable: true},
+                    { data: "action", orderable: false, searchable: false, width: "15%"},
                 ],
                 columnDefs: [
                     {

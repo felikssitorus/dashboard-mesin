@@ -95,25 +95,21 @@
 
                     </div>
 
-                    <div class="card-container row row-cols-1 row-cols-md-2 row-cols-lg-3 g-5">
+                    <div class="card-container row row-cols-1 row-cols-md-3 row-cols-xl-5 g-5">
                         @foreach ($mesin as $item)
-                            <div class="machine-card-wrapper col-lg-4 col-md-6 mb-4"
+                            <div class="machine-card-wrapper col"
                                  data-line-id="{{ $item->line_id }}"
                                  data-proses-ids="{{ $item->proses->pluck('id')->implode(',') }}"
                                  data-name="{{ $item->name }}"
                                  data-kode-mesin="{{ $item->kodeMesin }}">
                                 <div class="machine-card card h-100" style="text-align: center;  border: 1px solid #e0e0e0; border-radius: 8px; background-color: #f9f9f9; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                                    <div class="card-body text-center">
+                                    <div class="card-body d-flex flex-column">
                                         @if ($item->image)
                                             {{-- Jika mesin PUNYA gambar, tampilkan gambar tersebut --}}
-                                            <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="img-fluid rounded" style="height: 200px; width: 100%; object-fit: cover;"/>
+                                            <img src="{{ asset('storage/' . $item->image) }}" alt="{{ $item->name }}" class="img-fluid rounded" style="height: 150px; width: 100%; object-fit: cover;"/>
                                         @else
                                             {{-- Jika TIDAK ADA gambar, tampilkan ikon default --}}
-                                            <i class="ki-duotone ki-calculator text-primary" style="font-size: 200px;">
-                                                <span class="path1"></span><span class="path2"></span>
-                                                <span class="path3"></span><span class="path4"></span>
-                                                <span class="path5"></span><span class="path6"></span>
-                                            </i>
+                                            <img src="{{ asset('assets/img/no-image.png') }}" alt="No Image Available" style="height: 150px; width: 100%;">
                                         @endif
                                         <p class=""></p>
                                         <div class="mb-4">
@@ -142,7 +138,7 @@
 
                                         <p class="card-text">{{ $item->jumlahOperator }} Operator</p>
 
-                                        <div class="d-grid">
+                                        <div class="d-grid mt-auto pt-4">
                                             <button class="btn btn-primary" onclick="showDetail('{{ $item->id }}')">
                                                 <i class="fas fa-eye"></i> Detail
                                             </button>
@@ -210,13 +206,13 @@
                     </div>
                     <!--end::modal mesin -->
 
-                    <!--begin::Modal - Import Ruangan-->
+                    <!--begin::modal export pdf-->
                     <div class="modal fade" id="export_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                         aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header my-0" id="export_modal_header">
-                                    <label class="fw-semibold fs-4">Download Log</label>
+                                    <h3 class="modal-title">Download Machine List</h3>
                                     <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
                                         <i class="ki-duotone ki-cross fs-1">
                                             <span class="path1"></span>
@@ -225,24 +221,38 @@
                                     </div>
                                 </div>
                                 <div class="modal-body px-5">
-                                    <div class="form-group my-2">
-                                        <label class="form-label">Tanggal Awal</label>
-                                        <input type="date" class="form-control" name="tanggal_awal" id="tanggal_awal">
+                                    <div class="row align-items-center mb-3">
+                                        <label for="filter_lines" class="col-sm-4 col-form-label">Line</label>
+                                        <div class="col-sm-8">
+                                            <select id="filter_lines" class="form-select form-select-sm w-300px">
+                                                <option value="">Semua Line</option>
+                                                @foreach ($filter_lines as $line)
+                                                    <option value="{{ $line->id }}">{{ $line->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="form-group my-2">
-                                        <label class="form-label">Tanggal Akhir</label>
-                                        <input type="date" class="form-control" name="tanggal_akhir" id="tanggal_akhir">
+                                    <div class="row align-items-center mb-3">
+                                        <label for="filter_proses" class="col-sm-4 col-form-label">Proses</label>
+                                        <div class="col-sm-8">
+                                            <select id="filter_proses" class="form-select form-select-sm w-300px">
+                                                <option value="">Semua Proses</option>
+                                                @foreach ($filter_proses as $proses)
+                                                    <option value="{{ $proses->id }}">{{ $proses->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class="form-group my-4">
-                                        <button class="btn btn-primary w-100" type="button" id="submitFormDownload">
-                                            Download Report
-                                        </button>
-                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-primary w-100" type="button" id="submitFormDownload">
+                                        Download PDF
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <!--end::Modal - Import Ruangan-->
+                    <!--end::modal export pdf-->
 
                 </div>
             </div>
@@ -353,5 +363,96 @@
                 $('#bodyModalDetailMesin').html('<p class="text-center text-danger">Gagal memuat data.</p>');
             });
         }
+
+        $('#pdfExport-btn').on('click', function () {
+            $('#export_modal').modal('show');
+        });
+
+        $('#submitFormDownload').on('click', function() {
+            // Disable tombol submit setelah form disubmit
+            var $form = $(this);
+            $form.find('button[type="submit"]').attr('disabled', true);
+            $form.find('button[type="submit"]').text('Loading...');
+
+            $.ajax({
+                url: "{{ route('v1.dashboard.generatePdf') }}",
+                method: "POST",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    filter_lines: $('#filter_lines').val(),
+                    filter_proses: $('#filter_proses').val()
+                },
+                xhrFields: {
+                    responseType: 'blob' // Pastikan response diterima sebagai blob
+                },
+                beforeSend: function() {
+                    $('.page-loading').fadeIn();
+                    $form.find('button[type="submit"]').attr('disabled', true);
+                    $form.find('button[type="submit"]').text('Loading...');
+                },
+                success: function(response, status, xhr) {
+                    let contentType = xhr.getResponseHeader("Content-Type");
+
+                    // Jika response berupa JSON (error), tampilkan pesan
+                    if (contentType.includes("application/json")) {
+                        response.text().then(text => {
+                            let jsonResponse = JSON.parse(text);
+                            Swal.fire({
+                                title: "Mohon Maaf :(",
+                                text: jsonResponse.message,
+                                icon: "error",
+                                allowOutsideClick: false, // Mencegah klik di luar menutup alert
+                                allowEscapeKey: false, // Mencegah tombol Escape menutup alert
+                                showCloseButton: true, // Menampilkan tombol close (X)
+                            });
+                        });
+                        return;
+                    }
+
+                    // Jika response adalah Blob (PDF), lanjutkan proses download
+                    let filename = "ListMachine.pdf";
+                    let disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.includes('filename=')) {
+                        filename = disposition.split('filename=')[1].replace(/"/g, '');
+                    }
+
+                    let blob = new Blob([response], {
+                        type: 'application/pdf'
+                    });
+                    let link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                },
+                error: function(xhr) {
+                    try {
+                        let jsonResponse = JSON.parse(xhr.responseText);
+                        Swal.fire({
+                            title: "Mohon Maaf :(",
+                            text: jsonResponse.message,
+                            icon: "error",
+                            allowOutsideClick: false, // Mencegah klik di luar menutup alert
+                            allowEscapeKey: false, // Mencegah tombol Escape menutup alert
+                            showCloseButton: true, // Menampilkan tombol close (X)
+                        });
+                    } catch (e) {
+                        Swal.fire({
+                            title: "Mohon Maaf :(",
+                            text: "Terjadi kesalahan saat mengunduh PDF.",
+                            icon: "error",
+                            allowOutsideClick: false, // Mencegah klik di luar menutup alert
+                            allowEscapeKey: false, // Mencegah tombol Escape menutup alert
+                            showCloseButton: true, // Menampilkan tombol close (X)
+                        });
+                    }
+                },
+                complete: function() {
+                    $('.page-loading').fadeOut();
+                    $form.find('button[type="submit"]').attr('disabled', false);
+                }
+            });
+        });
     </script>
 @endsection

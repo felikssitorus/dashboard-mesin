@@ -10,6 +10,7 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
     Route::prefix('dashboard')->name('dashboard.')->group(function () {
         Route::get('detail/{id}', [App\Http\Controllers\DashboardController::class, 'detail'])->name('detail');
         Route::get('getDataMesin', [App\Http\Controllers\DashboardController::class, 'getDataTableMesin'])->name('getDataTableMesin');
+        Route::post('pdf', [App\Http\Controllers\DashboardController::class, 'generatePdf'])->name('generatePdf');
     });
 
     Route::prefix('auditTrail')->name('auditTrail.')->middleware(['auth'])->group(function () {
