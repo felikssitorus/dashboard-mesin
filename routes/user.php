@@ -11,6 +11,7 @@ Route::prefix('v1')->name('v1.')->middleware(['auth', 'MaintenanceMode', 'CheckJ
         Route::get('detail/{id}', [App\Http\Controllers\DashboardController::class, 'detail'])->name('detail');
         Route::get('getDataMesin', [App\Http\Controllers\DashboardController::class, 'getDataTableMesin'])->name('getDataTableMesin');
         Route::post('pdf', [App\Http\Controllers\DashboardController::class, 'generatePdf'])->name('generatePdf');
+        Route::post('excel', [App\Http\Controllers\DashboardController::class, 'generateExcel'])->name('generateExcel');
     });
 
     Route::prefix('auditTrail')->name('auditTrail.')->middleware(['auth'])->group(function () {

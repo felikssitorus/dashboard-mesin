@@ -114,4 +114,97 @@ class DashboardController extends Controller
         }, $text, ['Content-Type' => 'application/pdf']);
     }
 
+    public function generateExcel(Request $request)
+    {
+        $filter_lines = $request->filter_lines;
+        $filter_proses = $request->filter_proses;
+
+        $query = Mesin::with(['proses', 'line'])
+            ->when($filter_lines, function ($query, $filter_lines) {
+                return $query->where('line_id', $filter_lines);
+            })
+            ->when($filter_proses, function ($query, $filter_proses) {
+                return $query->whereHas('proses', function ($q) use ($filter_proses) {
+                    $q->where('proses.id', $filter_proses);
+                });
+            });
+
+        $data = $query->orderBy('created_at', 'desc')->get();
+
+        if ($data->isEmpty()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Tidak ada data untuk tanggal yang dipilih.'
+            ], 404);
+        }
+
+        $line_name = $filter_lines ? Line::find($filter_lines)->name : 'Semua Line';
+        $proses_name = $filter_proses ? Proses::find($filter_proses)->name : 'Semua Proses';
+        $printedFromUrl = url()->previous();
+
+        $model = Mesin::class;
+        $cetakanKe = UserPrint::query()
+                        ->where('user_id', auth()->user()->id)
+                        ->where('model', $model)
+                        ->first();
+        if (!$cetakanKe) {
+            UserPrint::create([
+                'user_id' => auth()->user()->id,
+                'model' => $model,
+                'print_count' => 1,
+            ]);
+            $cetakanKe = 1;
+        } else {
+            UserPrint::query()
+                ->where('user_id', auth()->user()->id)
+                ->where('model', $model)
+                ->update(['print_count' => $cetakanKe->print_count + 1]);
+            $cetakanKe = $cetakanKe->print_count + 1;
+        }
+
+        if (auth()->user()->jobLvl != 'Administrator') {
+            (new LogActivityService)->handle([
+                'perusahaan' => strtoupper(optional(json_decode(auth()->user()->result ?? '-'))->CompName) ?? '-',
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Export Excel',
+                'catatan' => 'Cetak Excel ke-' . $cetakanKe . ' data mesin pada ' . $line_name . ' & ' . $proses_name,
+            ]);
+        } else {
+            (new LogActivityService)->handle([
+                'perusahaan' => strtoupper(optional(json_decode(auth()->user()->result ?? '-'))->CompName) ?? '-',
+                'user' => strtoupper(auth()->user()->email),
+                'tindakan' => 'Export Excel',
+                'catatan' => 'Cetak Excel ke-' . $cetakanKe . ' data mesin pada ' . $line_name . ' & ' . $proses_name,
+            ]);
+        }
+
+        // Prepare data for Excel
+        $exportData = [];
+        foreach ($data as $item) {
+            $exportData[] = [
+                'Nama Mesin' => $item->name,
+                'Line' => $item->line->name ?? '-',
+                'Proses' => $item->proses->name ?? '-',
+                'Tanggal Dibuat' => $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : '-',
+            ];
+        }
+
+        // Generate Excel file
+        $filename = 'Data_Mesin_' . time() . '.xlsx';
+
+        return response()->streamDownload(function () use ($exportData) {
+            $file = fopen('php://output', 'w');
+            if (!empty($exportData)) {
+                fputcsv($file, array_keys($exportData[0]));
+                foreach ($exportData as $row) {
+                    fputcsv($file, $row);
+                }
+            }
+            fclose($file);
+        }, $filename, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Cache-Control' => 'no-store, no-cache',
+        ]);
+    }
+
 }

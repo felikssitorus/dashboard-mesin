@@ -45,13 +45,23 @@
                     </ul>
                 </div>
                 <div class="d-flex align-items-center py-1">
-                    <button class="btn btn-primary btn-lg" id="pdfExport-btn">
+                    <button class="btn btn-danger btn-lg me-3" id="pdfExport-btn">
                         <i class="ki-duotone ki-file-sheet fs-2">
                             <span class="path1"></span>
                             <span class="path2"></span>
                         </i>
                         <span id="pdf-label" class="fw-semibold">
                             PDF Export
+                        </span>
+                    </button>
+
+                    <button class="btn btn-success btn-lg" id="excelExport-btn">
+                        <i class="ki-duotone ki-tablet-book fs-2">
+                            <span class="path1"></span>
+                            <span class="path2"></span>
+                        </i>
+                        <span id="excel-label" class="fw-semibold">
+                            Excel Export
                         </span>
                     </button>
                 </div>
@@ -207,7 +217,7 @@
                     <!--end::modal mesin -->
 
                     <!--begin::modal export pdf-->
-                    <div class="modal fade" id="export_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                    <div class="modal fade" id="export_pdf_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
                         aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -245,7 +255,7 @@
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button class="btn btn-primary w-100" type="button" id="submitFormDownload">
+                                    <button class="btn btn-danger w-100" type="button" id="submitFormDownloadPdf">
                                         Download PDF
                                     </button>
                                 </div>
@@ -253,6 +263,54 @@
                         </div>
                     </div>
                     <!--end::modal export pdf-->
+
+                    <!--begin::modal export Excel-->
+                    <div class="modal fade" id="export_excel_modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header my-0" id="export_modal_header">
+                                    <h3 class="modal-title">Download Machine List</h3>
+                                    <div class="btn btn-icon btn-sm btn-active-icon-primary" data-bs-dismiss="modal">
+                                        <i class="ki-duotone ki-cross fs-1">
+                                            <span class="path1"></span>
+                                            <span class="path2"></span>
+                                        </i>
+                                    </div>
+                                </div>
+                                <div class="modal-body px-5">
+                                    <div class="row align-items-center mb-3">
+                                        <label for="filter_lines" class="col-sm-4 col-form-label">Line</label>
+                                        <div class="col-sm-8">
+                                            <select id="filter_lines" class="form-select form-select-sm w-300px">
+                                                <option value="">Semua Line</option>
+                                                @foreach ($filter_lines as $line)
+                                                    <option value="{{ $line->id }}">{{ $line->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-center mb-3">
+                                        <label for="filter_proses" class="col-sm-4 col-form-label">Proses</label>
+                                        <div class="col-sm-8">
+                                            <select id="filter_proses" class="form-select form-select-sm w-300px">
+                                                <option value="">Semua Proses</option>
+                                                @foreach ($filter_proses as $proses)
+                                                    <option value="{{ $proses->id }}">{{ $proses->name }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-success w-100" type="button" id="submitFormDownloadExcel">
+                                        Download Excel
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::modal export Excel-->
 
                 </div>
             </div>
@@ -373,10 +431,10 @@
         }
 
         $('#pdfExport-btn').on('click', function () {
-            $('#export_modal').modal('show');
+            $('#export_pdf_modal').modal('show');
         });
 
-        $('#submitFormDownload').on('click', function() {
+        $('#submitFormDownloadPdf').on('click', function() {
             // Disable tombol submit setelah form disubmit
             var $form = $(this);
             $form.find('button[type="submit"]').attr('disabled', true);
@@ -462,5 +520,95 @@
                 }
             });
         });
+
+        $('#excelExport-btn').on('click', function () {
+            $('#export_excel_modal').modal('show');
+        });
+
+        $('#submitFormDownloadExcel').on('click', function() {
+            var $form = $(this);
+            $form.find('button[type="submit"]').attr('disabled', true);
+            $form.find('button[type="submit"]').text('Loading...');
+
+            $.ajax({
+                url: "{{ route('v1.dashboard.generateExcel') }}",
+                method: "POST",
+                data: {
+                    _token: $('meta[name="csrf-token"]').attr('content'),
+                    filter_lines: $('#filter_lines').val(),
+                    filter_proses: $('#filter_proses').val()
+                },
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                beforeSend: function() {
+                    $('.page-loading').fadeIn();
+                    $form.find('button[type="submit"]').attr('disabled', true);
+                    $form.find('button[type="submit"]').text('Loading...');
+                },
+                success: function(response, status, xhr) {
+                    let contentType = xhr.getResponseHeader("Content-Type");
+
+                    if (contentType.includes("application/json")) {
+                        response.text().then(text => {
+                            let jsonResponse = JSON.parse(text);
+                            Swal.fire({
+                                title: "Mohon Maaf :(",
+                                text: jsonResponse.message,
+                                icon: "error",
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                showCloseButton: true,
+                            });
+                        });
+                        return;
+                    }
+
+                    let filename = "ListMachine.xlsx";
+                    let disposition = xhr.getResponseHeader('Content-Disposition');
+                    if (disposition && disposition.includes('filename=')) {
+                        filename = disposition.split('filename=')[1].replace(/"/g, '');
+                    }
+
+                    let blob = new Blob([response], {
+                        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                    });
+                    let link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                },
+                error: function(xhr) {
+                    try {
+                        let jsonResponse = JSON.parse(xhr.responseText);
+                        Swal.fire({
+                            title: "Mohon Maaf :(",
+                            text: jsonResponse.message,
+                            icon: "error",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showCloseButton: true,
+                        });
+                    } catch (e) {
+                        Swal.fire({
+                            title: "Mohon Maaf :(",
+                            text: "Terjadi kesalahan saat mengunduh Excel.",
+                            icon: "error",
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showCloseButton: true,
+                        });
+                    }
+                },
+                complete: function() {
+                    $('.page-loading').fadeOut();
+                    $form.find('button[type="submit"]').attr('disabled', false);
+                    $form.find('button[type="submit"]').text('Download Excel');
+                }
+            });
+        });
+
     </script>
 @endsection
