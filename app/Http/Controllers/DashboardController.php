@@ -50,14 +50,6 @@ class DashboardController extends Controller
                     $q->where('proses.id', $filter_proses);
                 });
             });
-        
-        // if ($filter_lines) {
-        //     $query->where('line_id', $filter_lines);
-        // }
-        
-        // if ($filter_proses) {
-        //     $query->where('proses_id', $filter_proses);
-        // }
 
         $data = $query->orderBy('created_at', 'desc')->get();
 

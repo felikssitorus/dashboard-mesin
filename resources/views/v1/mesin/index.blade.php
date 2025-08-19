@@ -289,6 +289,12 @@
                         </div>
                     </div>
                     <div class="row align-items-center mb-3">
+                        <label for="link_kualifikasi" class="col-sm-4 col-form-label">Link Kualifikasi</label>
+                        <div class="col-sm-8">
+                            <input type="url" class="form-control" id="link_kualifikasi" name="link_kualifikasi" placeholder="Masukkan link kualifikasi mesin">
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-3">
                         <label for="image" class="col-sm-4 col-form-label">Image</label>
                         <div class="col-sm-8">
                             <input type="file" class="form-control" id="image" name="image" accept="image/*">
@@ -403,6 +409,12 @@
                             <textarea class="form-control" id="keterangan" name="keterangan" rows="3" placeholder="Masukkan keterangan mesin">${mesin.keterangan || ''}</textarea>
                         </div>
                     </div>
+                    <div class="row align-items-center mb-3">
+                        <label for="link_kualifikasi" class="col-sm-4 col-form-label">Link Kualifikasi</label>
+                        <div class="col-sm-8">
+                            <input type="url" class="form-control" id="link_kualifikasi" name="link_kualifikasi" placeholder="Masukkan link kualifikasi mesin">
+                        </div>
+                    </div>
                     ${currentImageHtml}
                     <div class="row align-items-center mb-3">
                         <label for="image" class="col-sm-4 col-form-label">Image</label>
@@ -420,6 +432,7 @@
                 $('#speed').val(mesin.speed);
                 $('#jumlahOperator').val(mesin.jumlahOperator);
                 $('#keterangan').val(mesin.keterangan);
+                $('#link_kualifikasi').val(mesin.link_kualifikasi);
 
                 let prosesSelect = $('#proses_ids');
                 prosesSelect.empty();
@@ -521,6 +534,14 @@
                             <tr><th>Kapasitas</th><td>${mesin.kapasitas ? mesin.kapasitas + ' Liter' : '-'}</td></tr>
                             <tr><th>Speed</th><td>${mesin.speed ? mesin.speed + ' RPM' : '-'}</td></tr>
                             <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
+                            <tr>
+                                <th>Link Kualifikasi</th>
+                                <td>
+                                    ${mesin.link_kualifikasi 
+                                    ? `<a href="${mesin.link_kualifikasi}" target="_blank" class="text-primary fw-bold">Lihat Form</a>` 
+                                    : '-'}
+                                </td>
+                            </tr>
                             <tr><th>Updated At</th><td>${updatedAt}</td></tr>
                             <tr><th>Input By</th><td>${mesin.inupby || '-'}</td></tr>
                         </tbody>

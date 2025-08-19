@@ -22,6 +22,9 @@
         .machine-card-wrapper:hover .machine-card .card-title {
             color: var(--bs-primary) !important; /* Tambahkan !important jika perlu */
         }
+        .machine-card-wrapper .machine-card img {
+            filter: brightness(1.5) contrast(0.5) grayscale(100%);
+        }
     </style>
 @endsection
 
@@ -61,9 +64,6 @@
             <div class="card">
                 <div class="card-header">
                     <div class="card-title">Data Mesin</div>
-                    <div class="card-toolbar">
-                        <span class="badge badge-light-primary fs-7 fw-bold">Total Mesin: {{ $mesin->count() }}</span>
-                    </div>
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap gap-2 justify-content-start align-items-center py-5">
@@ -354,6 +354,14 @@
                             <tr><th>Kapasitas</th><td>${mesin.kapasitas ? mesin.kapasitas + ' Liter' : '-'}</td></tr>
                             <tr><th>Speed</th><td>${mesin.speed ? mesin.speed + ' RPM' : '-'}</td></tr>
                             <tr><th>Keterangan</th><td>${mesin.keterangan || '-'}</td></tr>
+                            <tr>
+                                <th>Link Kualifikasi</th>
+                                <td>
+                                    ${mesin.link_kualifikasi 
+                                    ? `<a href="${mesin.link_kualifikasi}" target="_blank" class="text-primary fw-bold">Lihat Form</a>` 
+                                    : '-'}
+                                </td>
+                            </tr>
                             <tr><th>Updated At</th><td>${updatedAt}</td></tr>
                             <tr><th>Input By</th><td>${mesin.inupby || '-'}</td></tr>
                         </tbody>

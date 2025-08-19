@@ -116,7 +116,8 @@ class MesinController extends Controller
             'speed'             => 'nullable|string',
             'jumlahOperator'    => 'required|integer',
             'proses_ids'        => 'required|array',
-            'keterangan'       => 'nullable|string',
+            'keterangan'        => 'nullable|string',
+            'link_kualifikasi'   => 'nullable|url',
             'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -131,14 +132,15 @@ class MesinController extends Controller
 
         try {
             $mesin = Mesin::create([
-                'line_id'        => $validatedData['line_id'],
-                'kodeMesin'      => $validatedData['kodeMesin'],
-                'name'           => $validatedData['name'],
-                'kapasitas'      => $validatedData['kapasitas'] ?? null,
-                'speed'          => $validatedData['speed'] ?? null,
-                'jumlahOperator' => $validatedData['jumlahOperator'],
-                'keterangan'     => $validatedData['keterangan'] ?? null,
-                'image'          => $validatedData['image'] ?? null,
+                'line_id'           => $validatedData['line_id'],
+                'kodeMesin'         => $validatedData['kodeMesin'],
+                'name'              => $validatedData['name'],
+                'kapasitas'         => $validatedData['kapasitas'] ?? null,
+                'speed'             => $validatedData['speed'] ?? null,
+                'jumlahOperator'    => $validatedData['jumlahOperator'],
+                'keterangan'        => $validatedData['keterangan'] ?? null,
+                'link_kualifikasi'   => $validatedData['link_kualifikasi'] ?? null,
+                'image'             => $validatedData['image'] ?? null,
             ]);
 
             $mesin->proses()->attach($request->proses_ids);
@@ -198,6 +200,7 @@ class MesinController extends Controller
             'speed'             => 'nullable|string',
             'jumlahOperator'    => 'required|integer',
             'keterangan'        => 'nullable|string',
+            'link_kualifikasi'   => 'nullable|url',
             'image'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -225,6 +228,7 @@ class MesinController extends Controller
                 'speed'          => $validatedData['speed'] ?? null,
                 'jumlahOperator' => $validatedData['jumlahOperator'],
                 'keterangan'     => $validatedData['keterangan'] ?? null,
+                'link_kualifikasi'   => $validatedData['link_kualifikasi'] ?? null,
                 'image'          => $validatedData['image'] ?? null,
             ]);
 
